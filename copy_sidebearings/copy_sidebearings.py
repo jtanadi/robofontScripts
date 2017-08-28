@@ -17,14 +17,14 @@ class SideBearing(object):
 
     def buildUI(self):
         
-        self.w = FloatingWindow((1000, 500, 200, 200), "Copy SB")
+        self.w = FloatingWindow((1200, 400, 200, 200), "Copy SB")
         self.w.textTarget = TextBox((10, 10, -10, 20), "Target")
-        self.w.radioTarget = RadioGroup((25, 30, 150, 20), ["Left SB", "Right SB"], isVertical = False, callback=self.radioTargetCallback)
+        self.w.radioTarget = RadioGroup((25, 33, 150, 20), ["Left SB", "Right SB"], isVertical = False, callback=self.radioTargetCallback)
 
-        self.w.line = HorizontalLine((10, 60, -10, 1))
+        self.w.line = HorizontalLine((10, 61, -10, 1))
         
         self.w.textSource = TextBox((10, 70, -10, 20), "Source")
-        self.w.radioSource = RadioGroup((25, 90, 150, 20), ["Left SB", "Right SB"], isVertical = False, callback=self.radioSourceCallback)
+        self.w.radioSource = RadioGroup((25, 93, 150, 20), ["Left SB", "Right SB"], isVertical = False, callback=self.radioSourceCallback)
         
         self.w.checkboxUC = CheckBox((10, 125, 45, 20), "UC", callback=self.checkboxUCcallback)
         self.w.checkboxLC = CheckBox((55, 125, 50, 20), "LC", callback=self.checkboxLCcallback)
