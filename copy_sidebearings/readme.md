@@ -1,1 +1,1 @@
-# Copies side bearings from selected characters
+Copies side bearings from selected characters
