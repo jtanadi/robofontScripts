@@ -1,5 +1,4 @@
 from robofab.interface.all.dialogs import Message
-from AppKit import *
 from vanilla import *
 import re
 
