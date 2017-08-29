@@ -1,4 +1,5 @@
 from robofab.interface.all.dialogs import Message
+from AppKit import *
 from vanilla import *
 import re
 
@@ -37,7 +38,8 @@ class SideBearing(object):
         self.w.checkboxUC = CheckBox((10, 125, 45, 20), "UC", callback=self.checkboxUCcallback)
         self.w.checkboxLC = CheckBox((55, 125, 50, 20), "LC", callback=self.checkboxLCcallback)
         
-        self.w.sourceGlyph = ComboBox((105, 125, 85, 21), sourceList, callback=self.sourceGlyphCallback, completes=False, continuous=True)
+        self.w.sourceGlyphBox = ComboBox((105, 125, 85, 21), sourceList, callback=self.sourceGlyphBoxCallback, completes=False, continuous=True)
+        self.w.sourceGlyphBoxObject = self.w.sourceGlyphBox.getNSComboBox() #assigns the NSComboBox object to a variable to dynamically update list later
         
         self.w.button = Button((10, 159, -10, 20), "OK", callback=self.buttonCallback)
         
@@ -81,29 +83,35 @@ class SideBearing(object):
         self.checkCase()
     
     
-    def sourceGlyphCallback(self, sender):
+    def sourceGlyphBoxCallback(self, sender):
         
        self.gSource = f[sender.get()]
 
 
     def checkCase(self):
-        
+
         if self.upperCase == 1 and self.lowerCase == 1:
-            sourceList = sorted(ucList + lcList)
-            print sourceList
+            self.sourceList = sorted(ucList + lcList)
+            self.refreshSourceGlyphBox()
             
         elif self.upperCase == 1 and self.lowerCase == 0:
-            sourceList = sorted(ucList)
-            print sourceList
+            self.sourceList = sorted(ucList)
+            self.refreshSourceGlyphBox()
             
         elif self.upperCase == 0 and self.lowerCase == 1:
-            sourceList = sorted(lcList)
-            print sourceList
+            self.sourceList = sorted(lcList)
+            self.refreshSourceGlyphBox()
         
         elif self.upperCase == 0 and self.lowerCase == 0:
-            sourceList = []
-            print sourceList            
+            self.sourceList = []
+            self.refreshSourceGlyphBox()        
+            
                              
+    def refreshSourceGlyphBox(self):
+
+        self.w.sourceGlyphBoxObject.removeAllItems()
+        self.w.sourceGlyphBoxObject.addItemsWithObjectValues_(self.sourceList)
+
                              
     def buttonCallback(self, sender):
         
@@ -133,8 +141,8 @@ SideBearing()
 ---------------
      TO DO
 ---------------
-+ A pop-up message that alerts user when inputted source glyph doesn't exist in current font
-+ Update combo box after UC / lc filters have been applied
-+ Fallbacks for empty or invalid entries (glyphs not in font, etc.)
++ BUG: Weird combo box bug that repeats characters that proceed the first (e.g. typing "de" yields "dee," "deg" yields "deegg")
++ BUG: Invalid glyphs also get doubled (anything not in UC & lc)
++ Alerts for empty or invalid source glyph entries
 
 """
