@@ -134,7 +134,7 @@ SideBearing()
      TO DO
 ---------------
 + A pop-up message that alerts user when inputted source glyph doesn't exist in current font
-+ Limited list of source glyphs (no accented chars, etc.) OR
++ Update combo box after UC / lc filters have been applied
 + Fallbacks for empty or invalid entries (glyphs not in font, etc.)
 
 """
