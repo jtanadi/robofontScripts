@@ -11,7 +11,7 @@ ucList = []
 lcList = []
 sourceList = []
        
-class SideBearing(object):
+class CopySideBearings(object):
 
     def __init__(self):
         self.upperCase = 0
@@ -127,7 +127,7 @@ class SideBearing(object):
                     gTarget.rightMargin = self.gSource.rightMargin
 
         
-SideBearing()
+CopySideBearings()
 
 """
 ---------------
@@ -135,6 +135,7 @@ SideBearing()
 ---------------
 + BUG: Weird combo box bug that repeats characters that proceed the first (e.g. typing "de" yields "dee," "deg" yields "deegg")
 + BUG: Invalid glyphs also get doubled (anything not in UC & lc)
-+ Alerts for empty or invalid source glyph entries
+
++ Add alerts for empty or invalid source glyph entries
 
 """
