@@ -30,12 +30,15 @@ class ScaleAMucci(object):
         self.w.targetHeightText = TextBox((10, 82, 100, 17),
                                   "Target height:")
          
-        self.w.targetHeightInput = EditText((115, 80, 55, 21), currentHeight, callback=self.targetHeightInputCallback)
+        self.w.targetHeightInput = EditText((115, 80, 55, 21),
+                                   currentHeight,
+                                   callback=self.targetHeightInputCallback)
         
-        self.w.okButton = Button((10, 105, -10, 40), "Scale-a-mooch!", callback=self.okButtonCallback)
+        self.w.okButton = Button((10, 105, -10, 40),
+                          "Scale-a-mooch!",
+                          callback=self.okButtonCallback)
         
          
-
     def sliderCallback(self, sender):
         self.targetHeight = int(sender.get())
          
@@ -78,6 +81,7 @@ class ScaleAMucci(object):
     def okButtonCallback(self, sender):
         self.mainCalculation()
         self.w.close()
+
 
 ScaleAMucci()
 
