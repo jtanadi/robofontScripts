@@ -38,7 +38,6 @@ class SideBearing(object):
         self.w.checkboxLC = CheckBox((55, 125, 50, 20), "LC", callback=self.checkboxLCcallback)
         
         self.w.sourceGlyphBox = ComboBox((105, 125, 85, 21), sourceList, callback=self.sourceGlyphBoxCallback, completes=False, continuous=True)
-        self.w.sourceGlyphBoxObject = self.w.sourceGlyphBox.getNSComboBox() #assigns the NSComboBox object to a variable to dynamically update list later
         
         self.w.button = Button((10, 159, -10, 20), "OK", callback=self.buttonCallback)
         
@@ -91,26 +90,20 @@ class SideBearing(object):
 
         if self.upperCase == 1 and self.lowerCase == 1:
             self.sourceList = sorted(ucList + lcList)
-            self.refreshSourceGlyphBox()
+            self.w.sourceGlyphBox.setItems(self.sourceList)
             
         elif self.upperCase == 1 and self.lowerCase == 0:
             self.sourceList = sorted(ucList)
-            self.refreshSourceGlyphBox()
+            self.w.sourceGlyphBox.setItems(self.sourceList)
             
         elif self.upperCase == 0 and self.lowerCase == 1:
             self.sourceList = sorted(lcList)
-            self.refreshSourceGlyphBox()
+            self.w.sourceGlyphBox.setItems(self.sourceList)
         
         elif self.upperCase == 0 and self.lowerCase == 0:
             self.sourceList = []
-            self.refreshSourceGlyphBox()        
+            self.w.sourceGlyphBox.setItems(self.sourceList)
             
-                             
-    def refreshSourceGlyphBox(self):
-
-        self.w.sourceGlyphBoxObject.removeAllItems()
-        self.w.sourceGlyphBoxObject.addItemsWithObjectValues_(self.sourceList)
-
                              
     def buttonCallback(self, sender):
         
