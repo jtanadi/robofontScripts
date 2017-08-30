@@ -25,21 +25,40 @@ class CopySideBearings(object):
 
     def buildUI(self):
         
-        self.w = FloatingWindow((1000, 400, 200, 200), "Copy SB")
-        self.w.textTarget = TextBox((10, 10, -10, 20), "Target")
-        self.w.radioTarget = RadioGroup((25, 33, 150, 20), ["Left SB", "Right SB"], isVertical = False, callback=self.radioTargetCallback)
+        self.w = FloatingWindow((1000, 400, 200, 200),
+                 "Copy SB")
+        
+        self.w.textTarget = TextBox((10, 10, -10, 20),
+                            "Target")
+        self.w.radioTarget = RadioGroup((25, 33, 150, 20),
+                             ["Left SB", "Right SB"],
+                             isVertical = False,
+                             callback=self.radioTargetCallback)
 
         self.w.line = HorizontalLine((10, 61, -10, 1))
         
-        self.w.textSource = TextBox((10, 70, -10, 20), "Source")
-        self.w.radioSource = RadioGroup((25, 93, 150, 20), ["Left SB", "Right SB"], isVertical = False, callback=self.radioSourceCallback)
+        self.w.textSource = TextBox((10, 70, -10, 20),
+                            "Source")                            
+        self.w.radioSource = RadioGroup((25, 93, 150, 20),
+                             ["Left SB", "Right SB"],
+                             isVertical = False,
+                             callback=self.radioSourceCallback)
         
-        self.w.checkboxUC = CheckBox((10, 125, 45, 20), "UC", callback=self.checkboxUCcallback)
-        self.w.checkboxLC = CheckBox((55, 125, 50, 20), "LC", callback=self.checkboxLCcallback)
-        
-        self.w.sourceGlyphBox = ComboBox((105, 125, 85, 21), sourceList, callback=self.sourceGlyphBoxCallback, completes=False, continuous=True)
-        
-        self.w.button = Button((10, 159, -10, 20), "OK", callback=self.buttonCallback)
+        self.w.checkboxUC = CheckBox((10, 125, 45, 20),
+                            "UC",
+                            callback=self.checkboxUCcallback)      
+        self.w.checkboxLC = CheckBox((55, 125, 50, 20),
+                            "LC",
+                            callback=self.checkboxLCcallback)
+        self.w.sourceGlyphBox = ComboBox((105, 125, 85, 21),
+                                sourceList,
+                                callback=self.sourceGlyphBoxCallback,
+                                completes=False,
+                                continuous=True)
+       
+        self.w.okButton = Button((10, 159, -10, 20),
+                        "OK",
+                        callback=self.okButtonCallback)
         
 
     def generateRegexList(self):
@@ -105,23 +124,27 @@ class CopySideBearings(object):
             self.w.sourceGlyphBox.setItems(self.sourceList)
             
                              
-    def buttonCallback(self, sender):
+    def okButtonCallback(self, sender):
         
         self.computeSidebearings()
         self.w.close()
 
     def computeSidebearings(self):
+       
         if self.targetIndex == 0:
             if self.sourceIndex == 0:
                 for gTarget in selectedGlyphs:
                     gTarget.leftMargin = self.gSource.leftMargin
+            
             elif self.sourceIndex == 1:
                 for gTarget in selectedGlyphs:
                     gTarget.leftMargin = self.gSource.rightMargin
+        
         elif self.targetIndex == 1:
             if self.sourceIndex == 0:
                 for gTarget in selectedGlyphs:
                     gTarget.rightMargin = self.gSource.leftMargin
+            
             elif self.sourceIndex == 1:
                 for gTarget in selectedGlyphs:
                     gTarget.rightMargin = self.gSource.rightMargin
