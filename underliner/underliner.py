@@ -12,7 +12,7 @@ class Underliner(object):
         self.offset = 250
         self.thickness = 250
         
-        self.text = "bongvaper"
+        self.text = ""
         
         self.buildUI()
         self.w.open()
@@ -20,7 +20,7 @@ class Underliner(object):
 
     def buildUI(self):
         
-        self.w = Window((500, 370),
+        self.w = Window((500, 410),
                  "Underline all your glyphs!")
         
         self.w.offsetText = TextBox((10, 10, -10, 20),
@@ -53,10 +53,13 @@ class Underliner(object):
                             "Underline",
                             callback = self.drawButtonCallback)
                             
-        self.w.canvas = Canvas((10, 160, -10, -10),
+        self.w.canvas = Canvas((10, 160, -10, -43),
                         hasHorizontalScroller = False,
                         hasVerticalScroller = False,
-                        delegate = self)                        
+                        delegate = self)
+                        
+        self.w.inputString = EditText((10, 375, -10, 24),
+                             callback = self.inputStringCallback)                                                
                             
     
     def offsetSliderCallback(self, sender):
@@ -95,6 +98,12 @@ class Underliner(object):
         self.w.canvas.update()    
     
     
+    def inputStringCallback(self, sender):
+        self.text = sender.get()
+        
+        self.w.canvas.update()
+        
+        
     def draw(self):
         
         fill(0,0,0, .5)
@@ -144,8 +153,10 @@ Underliner()
      TO DO
 ---------------
 + BUG: Crashes when script is run & CurrentFont() is None
-+ BUG: Crashes when there's a space in sample string
++ BUG: Crashes when using non-alphabet chars in sample string
 + BUG: Why does correctDirection() not work???
 
-+ Editable sample string (not just "bongvaper...")
++ Can input string EditText have default focus when script is launched?
++ Drawing auto-resizes based on input width
+
 """
