@@ -116,7 +116,7 @@ class Underliner(object):
         f.decompose()
         
         for glyph in f:
-            glyph.correctDirection()
+            #glyph.correctDirection()
             
             glyphWidth = glyph.width
             
@@ -133,6 +133,8 @@ class Underliner(object):
     def drawButtonCallback(self, sender):
         
         self.drawUnderline()
+        
+        self.w.canvas.update()
         
 
 Underliner()
