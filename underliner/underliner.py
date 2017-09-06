@@ -31,10 +31,10 @@ class Underliner(object):
                              callback = self.offsetValueCallback)
         
         self.w.offsetSlider = Slider((10, 25, -10, 40),
-                        minValue = 0,
-                        maxValue = 500,
-                        value = 250,
-                        callback = self.offsetSliderCallback)
+                              minValue = 0,
+                              maxValue = 500,
+                              value = 250,
+                              callback = self.offsetSliderCallback)
                         
         self.w.thicknessText = TextBox((10, 70, -10, 20),
                                "Thickness")    
@@ -44,10 +44,10 @@ class Underliner(object):
                                 callback = self.thicknessValueCallback)                    
                         
         self.w.thicknessSlider = Slider((10, 85, -10, 40),
-                                minValue = 0,
-                                maxValue = 500,
-                                value = 250,
-                                callback = self.thicknessSliderCallback)
+                                 minValue = 0,
+                                 maxValue = 500,
+                                 value = 250,
+                                 callback = self.thicknessSliderCallback)
                                 
         self.w.drawButton = Button((10, 115, -10, 40),
                             "Underline",
