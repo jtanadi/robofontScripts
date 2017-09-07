@@ -129,25 +129,29 @@ class CopySideBearings(object):
         self.computeSidebearings()
         self.w.close()
 
+
     def computeSidebearings(self):
-       
+        
+        sourceLeft = int(self.gSource.leftMargin)
+        sourceRight = int(self.gSource.rightMargin)
+        
         if self.targetIndex == 0:
             if self.sourceIndex == 0:
                 for gTarget in selectedGlyphs:
-                    gTarget.leftMargin = self.gSource.leftMargin
+                    gTarget.leftMargin = sourceLeft
             
             elif self.sourceIndex == 1:
                 for gTarget in selectedGlyphs:
-                    gTarget.leftMargin = self.gSource.rightMargin
+                    gTarget.leftMargin = sourceRight
         
         elif self.targetIndex == 1:
             if self.sourceIndex == 0:
                 for gTarget in selectedGlyphs:
-                    gTarget.rightMargin = self.gSource.leftMargin
+                    gTarget.rightMargin = sourceLeft
             
             elif self.sourceIndex == 1:
                 for gTarget in selectedGlyphs:
-                    gTarget.rightMargin = self.gSource.rightMargin
+                    gTarget.rightMargin = sourceRight
 
         
 CopySideBearings()
