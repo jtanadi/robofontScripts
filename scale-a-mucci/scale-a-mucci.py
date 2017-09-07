@@ -1,30 +1,40 @@
 from robofab.interface.all.dialogs import Message
 from vanilla import *
+from mojo.drawingTools import *
+from mojo.canvas import Canvas
 
 f = CurrentFont()
 
-currentHeight = f.info.ascender + -f.info.descender #Total measurement from ascender to descender
+if f == None:
+    Message("Open a font first!")
 
+upm = f.info.unitsPerEm
+currentHeight = int(f.info.ascender + -f.info.descender) #Total measurement from ascender to descender
 
 class ScaleAMucci(object):
 
     def __init__(self):
         
+        self.targetHeight = currentHeight
         self.buildUI()
         self.w.open()
         
+        
     def buildUI(self):
         
-        self.w = Window((300, 155))
+        self.w = Window((300, 415))
         
-        self.w.currentHeightText = TextBox((10, 10, -10, 17),
-                                   "Current height:   " + str(currentHeight) + " em units")
+        self.w.currentHeightText = TextBox((10, 10, 150, 17),
+                                   "Current height:   " + str(currentHeight))
+                                   
+        self.w.currentUPM = TextBox((200, 10, -10, 17),
+                                   "UPM:   " + str(upm),
+                                   alignment = "right")                                   
         
         self.w.targetHeightSlider = Slider((10, 40, -10, 23),
                                     minValue = currentHeight*.5,
                                     maxValue = currentHeight*1.5,
                                     value = currentHeight,
-                                    tickMarkCount=10,
                                     callback=self.sliderCallback)
 
         self.w.targetHeightText = TextBox((10, 82, 100, 17),
@@ -37,22 +47,35 @@ class ScaleAMucci(object):
         self.w.okButton = Button((10, 105, -10, 40),
                           "Scale-a-mooch!",
                           callback=self.okButtonCallback)
+                          
+        self.w.canvas = Canvas((0, 150, 0, 0),
+                        hasHorizontalScroller = False,
+                        hasVerticalScroller = False,
+                        delegate = self)                          
         
          
     def sliderCallback(self, sender):
+        
         self.targetHeight = int(sender.get())
          
         self.w.targetHeightInput.set(self.targetHeight)
+        
+        self.w.canvas.update()
+
          
     def targetHeightInputCallback(self, sender):
+        
         self.targetHeight = int(sender.get())
          
         self.w.targetHeightSlider.set(self.targetHeight)
         
+        self.w.canvas.update()
+        
     
     def mainCalculation(self):
+
         try:    
-            #Convert input string to integers & calculate scale
+            #Calculate scale
             xFactor = self.targetHeight / currentHeight
     
             #Decompose every glyph first (in case of component-based font)
@@ -61,10 +84,12 @@ class ScaleAMucci(object):
 
             #Scale & tans every glyph
             for glyph in f:
+                glyph.scale(xFactor)
                 glyph.width *= xFactor
-                glyph.scale((xFactor))
+                glyph.round() #Rounds all float values (incl. side bearings)
+                                
                 glyph.mark = (0.69, 0.43, 0.18, 1)
-
+            
             #Modify vertical metrics to new dimensions    
             f.info.ascender *= xFactor
             f.info.capHeight *= xFactor
@@ -79,9 +104,21 @@ class ScaleAMucci(object):
 
         
     def okButtonCallback(self, sender):
+
         self.mainCalculation()
         self.w.close()
-
+    
+    
+    def draw(self):
+        
+        fill(0,0,0,.5)
+        stroke(1,1,1,.25)
+        scale = self.targetHeight/upm
+        height = 50*scale
+        
+        for y in range(25, 225, 50):            
+            rect(10, y, 278, height)
+        
 
 ScaleAMucci()
 
@@ -93,8 +130,5 @@ ScaleAMucci()
 + BUG: Invalid glyphs also get doubled (anything not in UC & lc)
 
 + Restrict text input to numerals only
-+ Round results (esp. side bearings) to closest integer
 + "Scale" or move guides
-+ Visual display to illustrate what different values do to a textblock
-
 """
