@@ -126,9 +126,6 @@ ScaleAMucci()
 ---------------
      TO DO
 ---------------
-+ BUG: Weird combo box bug that repeats characters that proceed the first (e.g. typing "de" yields "dee," "deg" yields "deegg")
-+ BUG: Invalid glyphs also get doubled (anything not in UC & lc)
-
 + Restrict text input to numerals only
 + "Scale" or move guides
 """
