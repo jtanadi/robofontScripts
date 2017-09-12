@@ -1,4 +1,5 @@
-Script to increase vertical metrics without adding leading. Works by scaling glyphs.
+### Scale-A-Mucci!
+Script to adjust vertical metrics without adjusting leading. Works by scaling glyphs.
 
 GUI shows a drawing of a textblock set solid. The drawing is dynamic & is based on the ratio of your font's total height & UPM. Changing height value updates drawing.
 
