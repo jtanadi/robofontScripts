@@ -1,3 +1,4 @@
+### Etch-A-Sketch
 Script to help with sketching
 
 **Needs [DrawBot module](https://github.com/typemytype/drawBotRoboFontExtension) installed, but doesn't need to be run in DrawBot Extension.**
