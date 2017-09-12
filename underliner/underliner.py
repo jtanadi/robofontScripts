@@ -2,6 +2,7 @@ from vanilla import *
 from mojo.canvas import Canvas
 from fontTools.pens.cocoaPen import CocoaPen
 from mojo.drawingTools import *
+from lib.UI.spaceCenter.glyphSequenceEditText import GlyphSequenceEditText
 
 f = CurrentFont()
 
@@ -58,7 +59,8 @@ class Underliner(object):
                         hasVerticalScroller = False,
                         delegate = self)
                         
-        self.w.inputString = EditText((10, 375, -10, 24),
+        self.w.inputString = GlyphSequenceEditText((10, 375, -10, 24),
+                             f.naked(),
                              callback = self.inputStringCallback)                                                
                             
     
@@ -153,7 +155,6 @@ Underliner()
      TO DO
 ---------------
 + BUG: Crashes when script is run & CurrentFont() is None
-+ BUG: Crashes when using non-alphabet chars in sample string
 + BUG: Why does correctDirection() not work???
 
 + Can input string EditText have default focus when script is launched?
