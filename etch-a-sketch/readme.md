@@ -3,8 +3,11 @@ Script to help with sketching
 
 **Needs [DrawBot module](https://github.com/typemytype/drawBotRoboFontExtension) installed, but doesn't need to be run in DrawBot Extension.**
 
+- Custom font name when no font is open
+- Open font can be assigned as refrence in title block (e.g. when sketching different weights, etc.)
 - Adjustable x-height (in inches)
-- Ascender & descender guides (matches font metrics, or RF defaults if no font is open)
+- Distribution and number of sketch lines influenced by x-height
+- Ascender & descender guides: match current font metrics or user-defined when no font is open
 - [Non-photo blue lines](https://en.wikipedia.org/wiki/Non-photo_blue) (for scanning — but not sure how useful
 - Grayed-out letters (to simulate trace paper)
 
