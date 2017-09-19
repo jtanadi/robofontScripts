@@ -15,4 +15,4 @@ Type some glyphs, print a sheet (or save a PDF), and sketch:
 ![screenshot1](https://github.com/jtanadi/RoboFontScripts/blob/master/etch-a-sketch/Screen%20Shot%202017-09-18%20at%2011.58.15%20PM.png)
 
 If no font is open, the script will return a blank sketch sheet with guide lines:
-![screenshot2](https://github.com/jtanadi/RoboFontScripts/blob/master/etch-a-sketch/Screen%20Shot%202017-09-18%20at%2011.58.15%20PM.png)
+![screenshot2](https://github.com/jtanadi/RoboFontScripts/blob/master/etch-a-sketch/Screen%20Shot%202017-09-18%20at%2011.58.45%20PM.png)
