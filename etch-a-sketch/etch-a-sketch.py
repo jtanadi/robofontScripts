@@ -6,6 +6,7 @@ from numpy import arange
 from lib.UI.spaceCenter.glyphSequenceEditText import GlyphSequenceEditText
 from datetime import datetime
 import re
+from robofab.interface.all.dialogs import Message
 
 f = CurrentFont()
 
@@ -56,11 +57,12 @@ class EtchASketch(object):
         self.xHeightDrawing = 0.5 * ppi
         inputText = ""
         ascenderBox = descenderBox = blueLinesBox = grayLettersBox = 0
+        self.newFontName = "New Font"
         
         # Instantiate Drawing class (as "drawing") & pass the following variables
         # The value of each variable is updated through UI interactions
-        self.drawing = Drawing(fontName, fontRef, inputText, self.xHeightDrawing, ascenderBox,
-                               descenderBox, blueLinesBox, grayLettersBox)
+        self.drawing = Drawing(fontName, fontRef, self.newFontName, inputText, self.xHeightDrawing,
+                               ascenderBox, descenderBox, blueLinesBox, grayLettersBox)
         
         self.buildUI()
         self.refreshCanvas()
@@ -83,6 +85,12 @@ class EtchASketch(object):
                               fontName,
                               callback = self.fontNameTextCallback)
         
+        self.w.newFontNameText = EditText((x, row1, 150, 22),
+                                 self.newFontName,
+                                 callback = self.newFontNameTextCallback)
+        
+        self.w.newFontNameText.show(False)                                 
+                              
         self.w.fontRef = CheckBox((x+160, row1, 40, 22),
                          "Ref",
                          callback = self.fontRefCallback)                                  
@@ -159,7 +167,6 @@ class EtchASketch(object):
                                 "Save PDF!",
                                 callback = self.saveButtonCallback)
                                 
-            
         else:
             self.w.fontRef.enable(False)
             self.w.inputText = EditText((x, 40, 200, 22),
@@ -174,11 +181,26 @@ class EtchASketch(object):
         self.drawing.fontName = str(sender.get())
         self.w.setTitle("Etch-A-Sketch: " + self.drawing.fontName)
         self.refreshCanvas()
+    
+    
+    def newFontNameTextCallback(self, sender):
+        self.drawing.newFontName = str(sender.get())
+        self.refreshCanvas()    
         
     def fontRefCallback(self, sender):
         
         self.drawing.fontRef = sender.get()
+        
+        if self.drawing.fontRef == 1:
+            self.w.fontNameText.show(False)
+            self.w.newFontNameText.show(True)
+            
+        else:
+            self.w.fontNameText.show(True)
+            self.w.newFontNameText.show(False)
+
         self.refreshCanvas()
+            
             
     def inputTextCallback(self, sender):
         
@@ -189,8 +211,7 @@ class EtchASketch(object):
     def xHeightSliderCallback(self, sender):
         
         calculateMetrics((sender.get() * ppi))
-        self.drawing.xHeightDrawing = sender.get() * ppi
-                        
+        self.drawing.xHeightDrawing = sender.get() * ppi     
         self.refreshCanvas()
         
     
@@ -277,7 +298,6 @@ class EtchASketch(object):
         
         self.refreshCanvas()
         saveImage(fileToSave)
-        
         self.w.close()
     
     
@@ -298,12 +318,13 @@ class EtchASketch(object):
 class Drawing():
     
     # Values accepted from EtchASketch class
-    def __init__(self, fontName, fontRef, inputText, xHeightDrawing, ascenderBox,
+    def __init__(self, fontName, fontRef, newFontName, inputText, xHeightDrawing, ascenderBox,
                  descenderBox, blueLinesBox, grayLettersBox):
          
         # Rename the variables with "self." so they can be used in this class
         self.fontName = fontName
         self.fontRef = fontRef
+        self.newFontName = newFontName
         self.inputTextDrawing = inputText
         self.xHeightDrawing = xHeightDrawing
         self.ascenderBoxDrawing = ascenderBox
@@ -365,16 +386,15 @@ class Drawing():
         
             cmykFill(0, 0, 0, 1, 1)
             cmykStroke(None)
-            font("VulfMono-Light")
+            font("VulfMono-Light", 8)
             fallbackFont("Courier")
-            fontSize(8)
 
             if self.fontRef == 0:
-                refString = ""
+                nameString = self.fontName
             else:
-                refString = "FOR REF: "
+                nameString = self.newFontName + " (Ref: %s)" % self.fontName
                 
-            text(refString + self.fontName + " – " + self.dateTime, (marginLBR, pageHeight-27))
+            text(nameString + " – " + self.dateTime, (marginLBR, pageHeight-27))
 
             cmykFill(None)
             cmykStroke(0, 0, 0, 1, 1)
@@ -472,13 +492,19 @@ class Drawing():
             scale(1/xFactor)
 
                  
-EtchASketch()
+try:
+    EtchASketch()
+    
+except NameError:
+    Message("Please install DrawBot module")
 
 """
 ---------------
      TO DO
 ---------------
-+ Make a DrawingTools version so it's not reliant on DrawBot - (is it worth it?)
++ Make a DrawingTools version so it's not reliant on DrawBot - (is it possible? mojo.Canvas is a pain...)
++ Input string catches could be better... 
 + Expand to have typecooker mode?
 + Allow inputText string to flow to 2nd line
++ Add Observer to update everything when CurrentFont is switched
 """
