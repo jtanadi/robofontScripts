@@ -9,7 +9,7 @@ Script to help with sketching
 - Grayed-out letters (to simulate trace paper)
 
 Type some glyphs, print a sheet (or save a PDF), and sketch:
-![screenshot1](https://github.com/jtanadi/RoboFontScripts/blob/master/etch-a-sketch/Screen%20Shot%202017-09-11%20at%2011.16.28%20PM.png)
+![screenshot1](https://github.com/jtanadi/RoboFontScripts/blob/master/etch-a-sketch/Screen%20Shot%202017-09-18%20at%2011.58.15%20PM.png)
 
 If no font is open, the script will return a blank sketch sheet with guide lines:
-![screenshot2](https://github.com/jtanadi/RoboFontScripts/blob/master/etch-a-sketch/Screen%20Shot%202017-09-11%20at%2011.14.23%20PM.png)
+![screenshot2](https://github.com/jtanadi/RoboFontScripts/blob/master/etch-a-sketch/Screen%20Shot%202017-09-18%20at%2011.58.15%20PM.png)
