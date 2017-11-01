@@ -86,7 +86,7 @@ class Tofu(object):
             noBueno += string.digits
 
         if self.punctCheck == 1:
-            noBueno += string.punctuation
+            noBueno += string.punctuation + "‘’“”" # cheating on quotes...
 
         outputText = "".join(letter for letter in outputText if letter not in noBueno)
 
