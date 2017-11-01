@@ -93,3 +93,10 @@ class Tofu(object):
         self.window.outputText.set(outputText)
 
 Tofu()
+
+"""
+---------------
+     TO DO
+---------------
++ Remove formatting from input (paste as plain text)
+"""
