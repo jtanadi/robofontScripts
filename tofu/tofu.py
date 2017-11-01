@@ -99,4 +99,5 @@ Tofu()
      TO DO
 ---------------
 + Remove formatting from input (paste as plain text)
++ Add feature to add control chars
 """
