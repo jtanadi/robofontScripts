@@ -3,12 +3,12 @@ from mojo.events import addObserver, removeObserver
 from mojo.drawingTools import *
 
 f = CurrentFont()
-cG = CurrentGlyph()
 UPM = f.info.unitsPerEm
 
 class PatternPreview(object):
 
     def __init__(self):
+        self.glyph = CurrentGlyph()
         self.heightRadio, self.rowOnlyCheck = 0, 0
         self.height, self.inputHeight = UPM, UPM
 
@@ -43,8 +43,7 @@ class PatternPreview(object):
                                          "Close",
                                          callback=self.closeButtonCallback)
 
-        addObserver(self, "showPatternBackground", "drawBackground")
-        addObserver(self, "showPatternPreview", "drawPreview")
+        addObserver(self, "viewChange", "viewDidChangeGlyph")
 
         self.window.open()
 
@@ -59,7 +58,7 @@ class PatternPreview(object):
             self.height = self.inputHeight
             self.window.heightInput.enable(True)
 
-        cG.update()
+        self.glyph.update()
 
     def heightInputCallback(self, sender):
         self.window.heightInput.set(sender.get().lstrip("0"))
@@ -70,35 +69,49 @@ class PatternPreview(object):
         except ValueError:
             self.window.heightInput.set(self.inputHeight)
 
-        cG.update()
+        self.glyph.update()
 
     def rowOnlyCallback(self, sender):
         self.rowOnlyCheck = sender.get()
-        cG.update()
+        self.glyph.update()
 
     def closeButtonCallback(self, sender):
+        removeObserver(self, "viewDidChangeGlyph")
+        self.unsubscribeObservers()
+        self.window.close()
+        #self.glyph.update()
+
+    def viewChange(self, info):
+        self.glyph = info.get("glyph", "")
+        self.unsubscribeObservers()
+        self.subscribeObservers()
+
+    def subscribeObservers(self):
+        addObserver(self, "showPatternBackground", "drawBackground")
+        addObserver(self, "showPatternPreview", "drawPreview")
+        self.glyph.update()
+
+    def unsubscribeObservers(self):
         removeObserver(self, "drawBackground")
         removeObserver(self, "drawPreview")
-        self.window.close()
+        self.glyph.update()
 
     def showPatternBackground(self, info):
-        glyph = info.get("glyph", "")
         fill(0, 0, 0, 0.5)
-        self.drawPattern(glyph)
+        self.drawPattern()
 
     def showPatternPreview(self, info):
-        glyph = info.get("glyph", "")
         fill(0)
-        self.drawPattern(glyph)
+        self.drawPattern()
 
-    def drawPattern(self, glyph):
+    def drawPattern(self):
         if self.rowOnlyCheck == 0:
             for col in range(-1, 2):
                 for row in range(-1, 2):
                     if (col or row) != 0:
                         save()
-                        translate(col * glyph.width, row * self.height)
-                        drawGlyph(glyph)
+                        translate(col * self.glyph.width, row * self.height)
+                        drawGlyph(self.glyph)
                         restore()
 
         else:
@@ -116,6 +129,5 @@ PatternPreview()
 ---------------
      TO DO
 ---------------
-+ BUG: Preview won't auto-refresh heights after switching from one glyph to another.
-       (User has to click on glyph window.)
++ ???
 """
