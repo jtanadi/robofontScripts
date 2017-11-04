@@ -10,7 +10,7 @@ class PatternPreview(object):
 
     def __init__(self):
         self.heightRadio, self.rowOnlyCheck = 0, 0
-        self.height = UPM
+        self.height, self.inputHeight = UPM, UPM
 
         self.buildUI()
 
@@ -56,6 +56,7 @@ class PatternPreview(object):
             self.window.heightInput.enable(False)
 
         elif self.heightRadio == 1:
+            self.height = self.inputHeight
             self.window.heightInput.enable(True)
 
         cG.update()
@@ -64,9 +65,10 @@ class PatternPreview(object):
         self.window.heightInput.set(sender.get().lstrip("0"))
 
         try:
-            self.height = int(sender.get())
+            self.inputHeight = int(sender.get())
+            self.height = self.inputHeight
         except ValueError:
-            self.window.heightInput.set(self.height)
+            self.window.heightInput.set(self.inputHeight)
 
         cG.update()
 
