@@ -6,7 +6,6 @@ f = CurrentFont()
 UPM = f.info.unitsPerEm
 
 class PatternPreview(object):
-
     def __init__(self):
         self.glyph = CurrentGlyph()
         self.heightRadio, self.rowOnlyCheck = 0, 0
@@ -43,7 +42,9 @@ class PatternPreview(object):
                                          "Close",
                                          callback=self.closeButtonCallback)
 
-        addObserver(self, "viewChange", "viewDidChangeGlyph")
+        addObserver(self, "chageGlyph", "viewDidChangeGlyph")
+        addObserver(self, "showPatternBackground", "drawBackground")
+        addObserver(self, "showPatternPreview", "drawPreview")
 
         self.window.open()
 
@@ -77,24 +78,14 @@ class PatternPreview(object):
 
     def closeButtonCallback(self, sender):
         removeObserver(self, "viewDidChangeGlyph")
-        self.unsubscribeObservers()
-        self.window.close()
-        #self.glyph.update()
-
-    def viewChange(self, info):
-        self.glyph = info.get("glyph", "")
-        self.unsubscribeObservers()
-        self.subscribeObservers()
-
-    def subscribeObservers(self):
-        addObserver(self, "showPatternBackground", "drawBackground")
-        addObserver(self, "showPatternPreview", "drawPreview")
-        self.glyph.update()
-
-    def unsubscribeObservers(self):
         removeObserver(self, "drawBackground")
         removeObserver(self, "drawPreview")
+
         self.glyph.update()
+        self.window.close()
+
+    def chageGlyph(self, info):
+        self.glyph = info.get("glyph", "")
 
     def showPatternBackground(self, info):
         fill(0, 0, 0, 0.5)
@@ -118,8 +109,8 @@ class PatternPreview(object):
             for col in range(-1, 2):
                 if col != 0:
                     save()
-                    translate(col * glyph.width, 0)
-                    drawGlyph(glyph)
+                    translate(col * self.glyph.width, 0)
+                    drawGlyph(self.glyph)
                     restore()
 
 
@@ -129,5 +120,5 @@ PatternPreview()
 ---------------
      TO DO
 ---------------
-+ ???
++ Switch to regular window and remove close button (add BaseWindowController)
 """
