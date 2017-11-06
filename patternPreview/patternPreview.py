@@ -9,13 +9,13 @@ UPM = f.info.unitsPerEm
 class PatternPreview(BaseWindowController):
     def __init__(self):
         self.glyph = CurrentGlyph()
-        self.heightRadio, self.rowOnlyCheck = 0, 0
+        self.heightRadio, self.rowOnlyCheck, self.colOnlyCheck = 0, 0, 0
         self.height, self.inputHeight = UPM, UPM
 
         self.buildUI()
 
     def buildUI(self):
-        self.w = FloatingWindow((170, 160),
+        self.w = FloatingWindow((170, 155),
                                 closable=True)
 
         row = 5
@@ -33,10 +33,15 @@ class PatternPreview(BaseWindowController):
                                       callback=self.heightInputCallback)
         self.w.heightInput.enable(False)
 
-        row += 75
-        self.w.rowOnlyCheck = CheckBox((12, row, -10, 22),
-                                       "Single row only",
+        row += 80
+        self.w.rowOnlyCheck = CheckBox((11, row, -10, 22),
+                                       "Row only",
                                        callback=self.rowOnlyCallback)
+
+        row += 20
+        self.w.colOnlyCheck = CheckBox((11, row, -10, 22),
+                                       "Column only",
+                                       callback=self.colOnlyCallback)
 
         addObserver(self, "chageGlyph", "viewDidChangeGlyph")
         addObserver(self, "showPatternBackground", "drawBackground")
@@ -50,27 +55,40 @@ class PatternPreview(BaseWindowController):
 
         if self.heightRadio == 0:
             self.height = UPM
-            self.window.heightInput.enable(False)
+            self.w.heightInput.enable(False)
 
         elif self.heightRadio == 1:
             self.height = self.inputHeight
-            self.window.heightInput.enable(True)
+            self.w.heightInput.enable(True)
 
         self.glyph.update()
 
     def heightInputCallback(self, sender):
-        self.window.heightInput.set(sender.get().lstrip("0"))
+        self.w.heightInput.set(sender.get().lstrip("0"))
 
         try:
             self.inputHeight = int(sender.get())
             self.height = self.inputHeight
+        
         except ValueError:
-            self.window.heightInput.set(self.inputHeight)
+            self.w.heightInput.set(self.inputHeight)
 
         self.glyph.update()
 
     def rowOnlyCallback(self, sender):
         self.rowOnlyCheck = sender.get()
+
+        self.colOnlyCheck = 0
+        self.w.colOnlyCheck.set(0)
+
+        self.glyph.update()
+
+    def colOnlyCallback(self, sender):
+        self.colOnlyCheck = sender.get()
+
+        self.rowOnlyCheck = 0
+        self.w.rowOnlyCheck.set(0)
+
         self.glyph.update()
 
     def windowCloseCallback(self, sender):
@@ -95,12 +113,19 @@ class PatternPreview(BaseWindowController):
     def drawPattern(self):
         if self.rowOnlyCheck == 0:
             rowStart, rowEnd = -1, 2
+
         else:
             rowStart, rowEnd = 0, 1
 
-        for col in range(-1, 2):
-            for row in range(rowStart, rowEnd):
-                if (col or row) != 0:
+        if self.colOnlyCheck == 0:
+            colStart, colEnd = -1, 2
+
+        else:
+            colStart, colEnd = 0, 1
+
+        for row in range(rowStart, rowEnd):
+            for col in range(colStart, colEnd):
+                if (row or col) != 0:
                     save()
                     translate(col * self.glyph.width, row * self.height)
                     drawGlyph(self.glyph)
@@ -113,5 +138,5 @@ PatternPreview()
 ---------------
      TO DO
 ---------------
-+ 
++ ?
 """
