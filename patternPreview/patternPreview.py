@@ -1,11 +1,12 @@
 from vanilla import *
 from mojo.events import addObserver, removeObserver
 from mojo.drawingTools import *
+from defconAppKit.windows.baseWindow import BaseWindowController
 
 f = CurrentFont()
 UPM = f.info.unitsPerEm
 
-class PatternPreview(object):
+class PatternPreview(BaseWindowController):
     def __init__(self):
         self.glyph = CurrentGlyph()
         self.heightRadio, self.rowOnlyCheck = 0, 0
@@ -14,39 +15,35 @@ class PatternPreview(object):
         self.buildUI()
 
     def buildUI(self):
-        self.window = FloatingWindow((170, 160),
-                                     closable=False)
+        self.w = FloatingWindow((170, 160),
+                                closable=True)
 
         row = 5
-        self.window.heightTitle = TextBox((10, row, -10, 17),
-                                          "Cell Height:")
+        self.w.heightTitle = TextBox((10, row, -10, 17),
+                                     "Cell Height:")
 
         row += 20
-        self.window.heightRadio = RadioGroup((10, row, -10, 42),
-                                             ["Use font UPM", "Use custom height"],
-                                             callback=self.heightRadioCallback)
-        self.window.heightRadio.set(0)
+        self.w.heightRadio = RadioGroup((10, row, -10, 42),
+                                        ["Use font UPM", "Use custom height"],
+                                        callback=self.heightRadioCallback)
+        self.w.heightRadio.set(0)
 
-        self.window.heightInput = EditText((30, row + 45, -10, 22),
-                                           text=self.height,
-                                           callback=self.heightInputCallback)
-        self.window.heightInput.enable(False)
+        self.w.heightInput = EditText((30, row + 45, -10, 22),
+                                      text=self.height,
+                                      callback=self.heightInputCallback)
+        self.w.heightInput.enable(False)
 
         row += 75
-        self.window.rowOnlyCheck = CheckBox((12, row, -10, 22),
-                                            "Single row only",
-                                            callback=self.rowOnlyCallback)
-
-        row += 30
-        self.window.closeButton = Button((10, row, -10, 20),
-                                         "Close",
-                                         callback=self.closeButtonCallback)
+        self.w.rowOnlyCheck = CheckBox((12, row, -10, 22),
+                                       "Single row only",
+                                       callback=self.rowOnlyCallback)
 
         addObserver(self, "chageGlyph", "viewDidChangeGlyph")
         addObserver(self, "showPatternBackground", "drawBackground")
         addObserver(self, "showPatternPreview", "drawPreview")
 
-        self.window.open()
+        self.setUpBaseWindowBehavior()
+        self.w.open()
 
     def heightRadioCallback(self, sender):
         self.heightRadio = sender.get()
@@ -76,13 +73,13 @@ class PatternPreview(object):
         self.rowOnlyCheck = sender.get()
         self.glyph.update()
 
-    def closeButtonCallback(self, sender):
+    def windowCloseCallback(self, sender):
         removeObserver(self, "viewDidChangeGlyph")
         removeObserver(self, "drawBackground")
         removeObserver(self, "drawPreview")
-
         self.glyph.update()
-        self.window.close()
+
+        super(PatternPreview, self).windowCloseCallback(sender)
 
     def chageGlyph(self, info):
         self.glyph = info.get("glyph", "")
@@ -116,5 +113,5 @@ PatternPreview()
 ---------------
      TO DO
 ---------------
-+ Switch to regular window and remove close button (add BaseWindowController)
++ 
 """
