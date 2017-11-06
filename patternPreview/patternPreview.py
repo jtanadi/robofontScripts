@@ -32,7 +32,7 @@ class PatternPreview(BaseWindowController):
                                       callback=self.heightInputCallback)
         self.w.heightInput.enable(False)
 
-        row += 78
+        row += 77
         self.w.rowOnlyCheck = CheckBox((11, row, -10, 22),
                                        "Row only",
                                        callback=self.rowOnlyCallback)
