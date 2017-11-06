@@ -97,19 +97,15 @@ class PatternPreview(object):
 
     def drawPattern(self):
         if self.rowOnlyCheck == 0:
-            for col in range(-1, 2):
-                for row in range(-1, 2):
-                    if (col or row) != 0:
-                        save()
-                        translate(col * self.glyph.width, row * self.height)
-                        drawGlyph(self.glyph)
-                        restore()
-
+            rowStart, rowEnd = -1, 2
         else:
-            for col in range(-1, 2):
-                if col != 0:
+            rowStart, rowEnd = 0, 1
+
+        for col in range(-1, 2):
+            for row in range(rowStart, rowEnd):
+                if (col or row) != 0:
                     save()
-                    translate(col * self.glyph.width, 0)
+                    translate(col * self.glyph.width, row * self.height)
                     drawGlyph(self.glyph)
                     restore()
 
