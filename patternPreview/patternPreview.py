@@ -15,10 +15,9 @@ class PatternPreview(BaseWindowController):
         self.buildUI()
 
     def buildUI(self):
-        self.w = FloatingWindow((170, 155),
-                                closable=True)
+        self.w = FloatingWindow((170, 155))
 
-        row = 5
+        row = 6
         self.w.heightTitle = TextBox((10, row, -10, 17),
                                      "Cell Height:")
 
@@ -33,7 +32,7 @@ class PatternPreview(BaseWindowController):
                                       callback=self.heightInputCallback)
         self.w.heightInput.enable(False)
 
-        row += 80
+        row += 78
         self.w.rowOnlyCheck = CheckBox((11, row, -10, 22),
                                        "Row only",
                                        callback=self.rowOnlyCallback)
