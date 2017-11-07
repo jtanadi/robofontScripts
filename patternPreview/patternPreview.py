@@ -110,20 +110,23 @@ class PatternPreview(BaseWindowController):
         self.drawPattern()
 
     def drawPattern(self):
-        if self.rowOnlyCheck == 0:
-            rowStart, rowEnd = -1, 2
+        rows = 0
+        columns = 0
 
-        else:
-            rowStart, rowEnd = 0, 1
+        if self.rowOnlyCheck == 0:
+            if self.height >= 100:
+                rows = 1000 // self.height
+            else:
+                rows = 10
 
         if self.colOnlyCheck == 0:
-            colStart, colEnd = -1, 2
+            if self.glyph.width >= 100:
+                columns = 1000 // self.glyph.width
+            else:
+                columns = 10
 
-        else:
-            colStart, colEnd = 0, 1
-
-        for row in range(rowStart, rowEnd):
-            for col in range(colStart, colEnd):
+        for row in range(-rows, rows + 1):
+            for col in range(-columns, columns + 1):
                 if (row or col) != 0:
                     save()
                     translate(col * self.glyph.width, row * self.height)
