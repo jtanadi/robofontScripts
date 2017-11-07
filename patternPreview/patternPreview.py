@@ -68,7 +68,7 @@ class PatternPreview(BaseWindowController):
         try:
             self.inputHeight = int(sender.get())
             self.height = self.inputHeight
-        
+
         except ValueError:
             self.w.heightInput.set(self.inputHeight)
 
