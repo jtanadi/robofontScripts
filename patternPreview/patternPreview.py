@@ -15,7 +15,8 @@ class PatternPreview(BaseWindowController):
         self.buildUI()
 
     def buildUI(self):
-        self.w = FloatingWindow((170, 155))
+        self.w = FloatingWindow((170, 155),
+                                title="Pattern Preview")
 
         row = 6
         self.w.heightTitle = TextBox((10, row, -10, 17),
