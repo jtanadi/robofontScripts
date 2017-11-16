@@ -13,8 +13,8 @@ class InterPolationPreview(object):
         self.w = FloatingWindow((200, 200))
 
         self.w.interValueSlider = Slider((10, 10, -10, 23),
-                                         minValue=0,
-                                         maxValue=1,
+                                         minValue=-1,
+                                         maxValue=2,
                                          value=self.interValue,
                                          callback=self.interValueSliderCallback)
 
@@ -34,16 +34,17 @@ class InterPolationPreview(object):
         self.w.close()
         removeObserver(self, "drawBackground")
         removeObserver(self, "drawPreview")
+        f.removeLayer("temp-interpolation")
         g.update()
 
     def drawInterpolation(self, info):
         gFore = g.getLayer("foreground")
         gBack = g.getLayer("background")
 
-        g.getLayer("interpolation").interpolate(self.interValue, gFore, gBack)
+        g.getLayer("temp-interpolation").interpolate(self.interValue, gFore, gBack)
 
-        f.setLayerDisplay("interpolation", "Stroke", 0)
-        gInter = g.getLayer("interpolation")
+        f.setLayerDisplay("temp-interpolation", "Stroke", 0)
+        gInter = g.getLayer("temp-interpolation")
 
         save()
         translate(g.width, 0)
