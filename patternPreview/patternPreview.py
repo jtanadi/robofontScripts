@@ -3,13 +3,13 @@ from mojo.events import addObserver, removeObserver
 from mojo.drawingTools import *
 from defconAppKit.windows.baseWindow import BaseWindowController
 from math import ceil
+from mojo.UI import UpdateCurrentGlyphView()
 
 f = CurrentFont()
 UPM = f.info.unitsPerEm
 
 class PatternPreview(BaseWindowController):
     def __init__(self):
-        self.glyph = CurrentGlyph()
         self.heightRadio, self.rowOnlyCheck, self.colOnlyCheck = 0, 0, 0
         self.height, self.inputHeight = UPM, UPM
 
@@ -62,7 +62,7 @@ class PatternPreview(BaseWindowController):
             self.height = self.inputHeight
             self.w.heightInput.enable(True)
 
-        self.glyph.update()
+        UpdateCurrentGlyphView()
 
     def heightInputCallback(self, sender):
         self.w.heightInput.set(sender.get().lstrip("0"))
@@ -74,7 +74,7 @@ class PatternPreview(BaseWindowController):
         except ValueError:
             self.w.heightInput.set(self.inputHeight)
 
-        self.glyph.update()
+        UpdateCurrentGlyphView()
 
     def rowOnlyCallback(self, sender):
         self.rowOnlyCheck = sender.get()
@@ -82,7 +82,7 @@ class PatternPreview(BaseWindowController):
         self.colOnlyCheck = 0
         self.w.colOnlyCheck.set(0)
 
-        self.glyph.update()
+        UpdateCurrentGlyphView()
 
     def colOnlyCallback(self, sender):
         self.colOnlyCheck = sender.get()
@@ -90,13 +90,14 @@ class PatternPreview(BaseWindowController):
         self.rowOnlyCheck = 0
         self.w.rowOnlyCheck.set(0)
 
-        self.glyph.update()
+        UpdateCurrentGlyphView()
 
     def windowCloseCallback(self, sender):
         removeObserver(self, "viewDidChangeGlyph")
         removeObserver(self, "drawBackground")
         removeObserver(self, "drawPreview")
-        self.glyph.update()
+        
+        UpdateCurrentGlyphView()
 
         super(PatternPreview, self).windowCloseCallback(sender)
 
@@ -112,6 +113,8 @@ class PatternPreview(BaseWindowController):
         self.drawPattern()
 
     def drawPattern(self):
+        columns, rows = 0, 0
+
         if self.rowOnlyCheck == 0:
             if self.height >= UPM:
                 rows = int(ceil(UPM / self.height))
