@@ -2,6 +2,7 @@ from vanilla import *
 from mojo.events import addObserver, removeObserver
 from mojo.drawingTools import *
 from defconAppKit.windows.baseWindow import BaseWindowController
+from math import ceil
 
 f = CurrentFont()
 UPM = f.info.unitsPerEm
@@ -111,18 +112,15 @@ class PatternPreview(BaseWindowController):
         self.drawPattern()
 
     def drawPattern(self):
-        rows = 0
-        columns = 0
-
         if self.rowOnlyCheck == 0:
-            if self.height >= 100:
-                rows = 1000 // self.height
+            if self.height >= UPM:
+                rows = int(ceil(UPM / self.height))
             else:
                 rows = 10
 
         if self.colOnlyCheck == 0:
             if self.glyph.width >= 100:
-                columns = 1000 // self.glyph.width
+                columns = int(ceil(UPM / self.glyph.width))
             else:
                 columns = 10
 
