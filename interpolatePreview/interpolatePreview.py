@@ -12,11 +12,11 @@ class InterPolationPreview(object):
 
         self.w = FloatingWindow((200, 200))
 
-        self.w.slider = Slider((10, 10, -10, 23),
-                               minValue=0,
-                               maxValue=1,
-                               value=self.interValue,
-                               callback=self.sliderCallback)
+        self.w.interValueSlider = Slider((10, 10, -10, 23),
+                                         minValue=0,
+                                         maxValue=1,
+                                         value=self.interValue,
+                                         callback=self.interValueSliderCallback)
 
         self.w.closeButton = Button((10, 100, -10, 25),
                                     "Close",
@@ -26,7 +26,7 @@ class InterPolationPreview(object):
         addObserver(self, "drawInterpolation", "drawBackground")
         addObserver(self, "drawInterpolation", "drawPreview")
 
-    def sliderCallback(self, sender):
+    def interValueSliderCallback(self, sender):
         self.interValue = sender.get()
         g.update()
 
