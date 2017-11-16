@@ -10,7 +10,6 @@ UPM = f.info.unitsPerEm
 
 class PatternPreview(BaseWindowController):
     def __init__(self):
-        #self.glyph = CurrentGlyph()
         self.heightRadio, self.rowOnlyCheck, self.colOnlyCheck = 0, 0, 0
         self.height, self.inputHeight = UPM, UPM
 
