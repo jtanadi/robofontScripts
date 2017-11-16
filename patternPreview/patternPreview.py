@@ -139,5 +139,5 @@ PatternPreview()
 ---------------
      TO DO
 ---------------
-+ ?
++ Corner option + reflection option
 """
