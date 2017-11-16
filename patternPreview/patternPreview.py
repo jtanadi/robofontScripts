@@ -3,7 +3,7 @@ from mojo.events import addObserver, removeObserver
 from mojo.drawingTools import *
 from defconAppKit.windows.baseWindow import BaseWindowController
 from math import ceil
-from mojo.UI import UpdateCurrentGlyphView()
+from mojo.UI import UpdateCurrentGlyphView
 
 f = CurrentFont()
 UPM = f.info.unitsPerEm
