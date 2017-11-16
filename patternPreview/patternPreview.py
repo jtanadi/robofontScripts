@@ -10,6 +10,7 @@ UPM = f.info.unitsPerEm
 
 class PatternPreview(BaseWindowController):
     def __init__(self):
+        #self.glyph = CurrentGlyph()
         self.heightRadio, self.rowOnlyCheck, self.colOnlyCheck = 0, 0, 0
         self.height, self.inputHeight = UPM, UPM
 
@@ -50,6 +51,7 @@ class PatternPreview(BaseWindowController):
 
         self.setUpBaseWindowBehavior()
         self.w.open()
+        UpdateCurrentGlyphView()
 
     def heightRadioCallback(self, sender):
         self.heightRadio = sender.get()
@@ -96,7 +98,7 @@ class PatternPreview(BaseWindowController):
         removeObserver(self, "viewDidChangeGlyph")
         removeObserver(self, "drawBackground")
         removeObserver(self, "drawPreview")
-        
+
         UpdateCurrentGlyphView()
 
         super(PatternPreview, self).windowCloseCallback(sender)
@@ -105,6 +107,7 @@ class PatternPreview(BaseWindowController):
         self.glyph = info.get("glyph", "")
 
     def showPatternBackground(self, info):
+        self.glyph = info.get("glyph", "")
         fill(0, 0, 0, 0.5)
         self.drawPattern()
 
