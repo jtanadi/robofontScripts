@@ -2,8 +2,8 @@ import string as s
 import re
 from vanilla import *
 
-def removeExtraSpaces(input):
-    return re.sub(r"\  +", " ", input)
+def removeExtraSpaces(inputString):
+    return re.sub(r"\  +", " ", inputString)
 
 class NoTofu(object):
     def __init__(self):
@@ -94,7 +94,7 @@ class NoTofu(object):
         if self.punctCheck == 1:
             noBueno += s.punctuation + "‘’“”«»".decode("utf-8")
 
-        outputText = "".join(letter for letter in outputText if letter not in noBueno)
+        # outputText = "".join(letter for letter in outputText if letter not in noBueno)
         # outputText = outputText.translate(None, noBueno)
 
         self.window.outputText.set(removeExtraSpaces(outputText))
