@@ -94,7 +94,7 @@ class NoTofu(object):
         if self.punctCheck == 1:
             noBueno += s.punctuation + "‘’“”«»".decode("utf-8")
 
-        # outputText = "".join(letter for letter in outputText if letter not in noBueno)
+        outputText = "".join(letter for letter in outputText if letter not in noBueno)
         # outputText = outputText.translate(None, noBueno)
 
         self.window.outputText.set(removeExtraSpaces(outputText))
