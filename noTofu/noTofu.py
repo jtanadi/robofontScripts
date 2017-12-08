@@ -1,12 +1,12 @@
+import string as s
 from vanilla import *
-import string
 
-class Tofu(object):
+class NoTofu(object):
     def __init__(self):
         self.inputText, self.tofuText = "", ""
         self.ucCheck, self.lcCheck, self.digitCheck, self.punctCheck = 0, 0, 0, 0
 
-        self.window = Window((500, 610), "Tofu")
+        self.window = Window((500, 610), "Mo Tofu Mo Problems")
 
         row = 10
         self.window.inputTitle = TextBox((10, row, 100, 20),
@@ -38,7 +38,7 @@ class Tofu(object):
 
         row += 90
         self.window.tofuButton = Button((200, row, 100, 30),
-                                        "Tofu!",
+                                        "No Mo Tofu!",
                                         callback=self.tofuButtonCallback)
 
         row += 25
@@ -54,7 +54,7 @@ class Tofu(object):
         self.inputText = sender.get()
 
     def tofuTextCallback(self, sender):
-        self.tofuText = sender.get().strip(" ")
+        self.tofuText = sender.get().replace(" ", "")
 
     def ucCheckCallback(self, sender):
         self.ucCheck = sender.get()
@@ -83,16 +83,17 @@ class Tofu(object):
             outputText = self.inputText.lower()
 
         if self.digitCheck == 1:
-            noBueno += string.digits
+            noBueno += s.digits
 
         if self.punctCheck == 1:
-            noBueno += string.punctuation + "‘’“”" # cheating on quotes...
+            noBueno += s.punctuation + "‘’“”«»".decode("utf-8")
 
         outputText = "".join(letter for letter in outputText if letter not in noBueno)
+        # outputText = outputText.translate(None, noBueno)
 
         self.window.outputText.set(outputText)
 
-Tofu()
+NoTofu()
 
 """
 ---------------
@@ -100,4 +101,5 @@ Tofu()
 ---------------
 + Remove formatting from input (paste as plain text)
 + Add feature to add control chars
++ Better punctuation filter
 """
