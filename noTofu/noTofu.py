@@ -1,5 +1,9 @@
 import string as s
+import re
 from vanilla import *
+
+def removeExtraSpaces(input):
+    return re.sub(r"\  +", " ", input)
 
 class NoTofu(object):
     def __init__(self):
@@ -93,7 +97,7 @@ class NoTofu(object):
         outputText = "".join(letter for letter in outputText if letter not in noBueno)
         # outputText = outputText.translate(None, noBueno)
 
-        self.window.outputText.set(outputText)
+        self.window.outputText.set(removeExtraSpaces(outputText))
 
 NoTofu()
 
