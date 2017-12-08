@@ -78,9 +78,11 @@ class NoTofu(object):
 
         if self.ucCheck == 1:
             outputText = self.inputText.upper()
+            noBueno = noBueno.upper()
 
         if self.lcCheck == 1:
             outputText = self.inputText.lower()
+            noBueno = noBueno.lower()
 
         if self.digitCheck == 1:
             noBueno += s.digits
