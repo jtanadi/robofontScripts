@@ -1,16 +1,19 @@
 import string as s
 import re
 from vanilla import *
+from mojo.UI import CurrentSpaceCenter, OpenSpaceCenter
+from robofab.interface.all.dialogs import Message
 
 def removeExtraSpaces(inputString):
     return re.sub(r"\  +", " ", inputString)
 
 class NoTofu(object):
     def __init__(self):
-        self.inputText, self.tofuText = "", ""
+        self.inputText, self.tofuText, self.outputText = "", "", ""
         self.ucCheck, self.lcCheck, self.digitCheck, self.punctCheck = 0, 0, 0, 0
 
-        self.window = Window((500, 610), "Mo Tofu Mo Problems")
+        self.window = FloatingWindow((500, 610),
+                                     "Mo Tofu Mo Problems")
 
         row = 10
         self.window.inputTitle = TextBox((10, row, 100, 20),
@@ -45,6 +48,10 @@ class NoTofu(object):
                                         "No Mo Tofu!",
                                         callback=self.tofuButtonCallback)
 
+        self.window.copyToSCCheck = CheckBox((100, row+5, 100, 20),
+                                             "Copy to SC",
+                                             callback=self.copyToSCCheckCallback)
+
         row += 25
         self.window.outputTitle = TextBox((10, row, 100, 20),
                                           "Output:")
@@ -76,16 +83,19 @@ class NoTofu(object):
     def punctCheckCallback(self, sender):
         self.punctCheck = sender.get()
 
+    def copyToSCCheckCallback(self, sender):
+        self.copyToSCCheck = sender.get()
+
     def tofuButtonCallback(self, sender):
-        outputText = self.inputText
+        self.outputText = self.inputText
         noBueno = self.tofuText
 
         if self.ucCheck == 1:
-            outputText = self.inputText.upper()
+            self.outputText = self.inputText.upper()
             noBueno = noBueno.upper()
 
         if self.lcCheck == 1:
-            outputText = self.inputText.lower()
+            self.outputText = self.inputText.lower()
             noBueno = noBueno.lower()
 
         if self.digitCheck == 1:
@@ -94,10 +104,21 @@ class NoTofu(object):
         if self.punctCheck == 1:
             noBueno += s.punctuation + "‘’“”«»".decode("utf-8")
 
-        outputText = "".join(letter for letter in outputText if letter not in noBueno)
+        self.outputText = removeExtraSpaces("".join(letter for letter in self.outputText if letter not in noBueno))
         # outputText = outputText.translate(None, noBueno)
 
-        self.window.outputText.set(removeExtraSpaces(outputText))
+        self.window.outputText.set(self.outputText)
+
+        if self.copyToSCCheck == 1 and self.outputText != "":
+            try:
+                f = CurrentFont() # Is it weird to instantiate here, vs. using an observer?
+                OpenSpaceCenter(f, newWindow=False)
+
+                sc = CurrentSpaceCenter()
+                sc.setRaw(self.outputText)
+
+            except AttributeError:
+                Message("You need a font to copy to Space Center")
 
 NoTofu()
 
