@@ -1,65 +1,80 @@
 import string as s
 import re
+from defconAppKit.windows.baseWindow import BaseWindowController
 from vanilla import *
 from mojo.UI import CurrentSpaceCenter, OpenSpaceCenter
+from mojo.events import addObserver, removeObserver
 from robofab.interface.all.dialogs import Message
 
 def removeExtraSpaces(inputString):
     return re.sub(r"\  +", " ", inputString)
 
-class NoTofu(object):
+class NoTofu(BaseWindowController):
     def __init__(self):
-        self.inputText, self.tofuText, self.outputText = "", "", ""
-        self.ucCheck, self.lcCheck, self.digitCheck, self.punctCheck = 0, 0, 0, 0
+        self.font = CurrentFont()
 
-        self.window = FloatingWindow((500, 610),
-                                     "Mo Tofu Mo Problems")
+        self.inputText, self.tofuText, self.outputText = "", "", ""
+        self.ucCheck, self.lcCheck, self.digitCheck = 0, 0, 0
+        self.punctCheck, self.copyToSCCheck = 0, 0
+
+        self.w = FloatingWindow((500, 610),
+                                "Mo Tofu Mo Problems")
 
         row = 10
-        self.window.inputTitle = TextBox((10, row, 100, 20),
-                                         "Input:")
-        self.window.inputText = TextEditor((10, row+25, -10, 200),
-                                           callback=self.inputTextCallback)
+        self.w.inputTitle = TextBox((10, row, 100, 20),
+                                    "Input:")
+        self.w.inputText = TextEditor((10, row+25, -10, 200),
+                                      callback=self.inputTextCallback)
 
         row += 240
-        self.window.tofuTitle = TextBox((10, row, 100, 20),
-                                        "Tofu:")
-        self.window.tofuText = EditText((10, row+25, -110, 50),
-                                        callback=self.tofuTextCallback)
+        self.w.tofuTitle = TextBox((10, row, 100, 20),
+                                   "Tofu:")
+        self.w.tofuText = EditText((10, row+25, -110, 50),
+                                   callback=self.tofuTextCallback)
 
-        self.window.ucCheck = CheckBox((400, row+8, 100, 20),
-                                       "UC only",
-                                       callback=self.ucCheckCallback)
+        self.w.ucCheck = CheckBox((400, row+8, 100, 20),
+                                  "UC only",
+                                  callback=self.ucCheckCallback)
 
-        self.window.lcCheck = CheckBox((400, row+30, 100, 20),
-                                       "lc only",
-                                       callback=self.lcCheckCallback)
+        self.w.lcCheck = CheckBox((400, row+30, 100, 20),
+                                  "lc only",
+                                  callback=self.lcCheckCallback)
 
-        self.window.digitCheck = CheckBox((400, row+52, 100, 20),
-                                          "No digits",
-                                          callback=self.digitCheckCallback)
+        self.w.digitCheck = CheckBox((400, row+52, 100, 20),
+                                     "No digits",
+                                     callback=self.digitCheckCallback)
 
-        self.window.punctCheck = CheckBox((400, row+74, 100, 20),
-                                          "No puncts.",
-                                          callback=self.punctCheckCallback)
+        self.w.punctCheck = CheckBox((400, row+74, 100, 20),
+                                     "No puncts.",
+                                     callback=self.punctCheckCallback)
 
         row += 90
-        self.window.tofuButton = Button((200, row, 100, 30),
-                                        "No Mo Tofu!",
-                                        callback=self.tofuButtonCallback)
+        self.w.tofuButton = Button((200, row, 100, 30),
+                                   "No Mo Tofu!",
+                                   callback=self.tofuButtonCallback)
 
-        self.window.copyToSCCheck = CheckBox((100, row+5, 100, 20),
-                                             "Copy to SC",
-                                             callback=self.copyToSCCheckCallback)
+        self.w.copyToSCCheck = CheckBox((100, row+5, 100, 20),
+                                        "Copy to SC",
+                                        callback=self.copyToSCCheckCallback)
 
         row += 25
-        self.window.outputTitle = TextBox((10, row, 100, 20),
-                                          "Output:")
+        self.w.outputTitle = TextBox((10, row, 100, 20),
+                                     "Output:")
 
-        self.window.outputText = TextEditor((10, row+25, -10, 200),
-                                            readOnly=True)
+        self.w.outputText = TextEditor((10, row+25, -10, 200),
+                                       readOnly=True)
 
-        self.window.open()
+        addObserver(self, "updateFont", "fontDidOpen")
+        self.setUpBaseWindowBehavior()
+
+        self.w.open()
+
+    def updateFont(self, info):
+        self.font = info["font"]
+
+    def windowCloseCallback(self, sender):
+        removeObserver(self, "fontDidOpen")
+        super(NoTofu, self).windowCloseCallback(sender)
 
     def inputTextCallback(self, sender):
         self.inputText = sender.get()
@@ -69,12 +84,12 @@ class NoTofu(object):
 
     def ucCheckCallback(self, sender):
         self.ucCheck = sender.get()
-        self.window.lcCheck.set(0)
+        self.w.lcCheck.set(0)
         self.lcCheck = 0
 
     def lcCheckCallback(self, sender):
         self.lcCheck = sender.get()
-        self.window.ucCheck.set(0)
+        self.w.ucCheck.set(0)
         self.ucCheck = 0
 
     def digitCheckCallback(self, sender):
@@ -107,12 +122,11 @@ class NoTofu(object):
         self.outputText = removeExtraSpaces("".join(letter for letter in self.outputText if letter not in noBueno))
         # outputText = outputText.translate(None, noBueno)
 
-        self.window.outputText.set(self.outputText)
+        self.w.outputText.set(self.outputText)
 
         if self.copyToSCCheck == 1 and self.outputText != "":
             try:
-                f = CurrentFont() # Is it weird to instantiate here, vs. using an observer?
-                OpenSpaceCenter(f, newWindow=False)
+                OpenSpaceCenter(self.font, newWindow=False)
 
                 sc = CurrentSpaceCenter()
                 sc.setRaw(self.outputText)
