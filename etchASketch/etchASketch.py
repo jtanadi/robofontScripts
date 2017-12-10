@@ -39,7 +39,6 @@ pageHeight = 612
 
 
 def calculateMetrics(xHeightDrawing):
-
     xFactor = xHeightDrawing / xHeightCurrent
     ascenderTarget = ascender * xFactor
     descenderTarget = descender * xFactor
@@ -48,9 +47,7 @@ def calculateMetrics(xHeightDrawing):
 
 
 class EtchASketch(object):
-    
     def __init__(self):
-        
         self.ascender = ascender
         self.descender = descender
         fontRef = 0
@@ -58,137 +55,132 @@ class EtchASketch(object):
         inputText = ""
         ascenderBox = descenderBox = blueLinesBox = grayLettersBox = 0
         self.newFontName = "New Font"
-        
+
         # Instantiate Drawing class (as "drawing") & pass the following variables
         # The value of each variable is updated through UI interactions
         self.drawing = Drawing(fontName, fontRef, self.newFontName, inputText, self.xHeightDrawing,
                                ascenderBox, descenderBox, blueLinesBox, grayLettersBox)
-        
+
         self.buildUI()
         self.refreshCanvas()
         self.w.open()
-        
-    
-    def buildUI(self):    
+
+    def buildUI(self):
         x = 10
         xText = 8
         row1 = 10
         row2 = 78
         row3 = 165
         row4 = 250
-        
-        self.w = Window((960,590),
-                 minSize = (830,500),
-                 title = "Etch-A-Sketch: " + fontName)
-         
+
+        self.w = Window((960, 590),
+                        minSize=(830, 500),
+                        title="Etch-A-Sketch: "+fontName)
+
         self.w.fontNameText = EditText((x, row1, 150, 22),
-                              fontName,
-                              callback = self.fontNameTextCallback)
-        
+                                       fontName,
+                                       callback=self.fontNameTextCallback)
+
         self.w.newFontNameText = EditText((x, row1, 150, 22),
-                                 self.newFontName,
-                                 callback = self.newFontNameTextCallback)
-        
-        self.w.newFontNameText.show(False)                                 
-                              
+                                          self.newFontName,
+                                          callback=self.newFontNameTextCallback)
+
+        self.w.newFontNameText.show(False)
+
         self.w.fontRef = CheckBox((x+160, row1, 40, 22),
-                         "Ref",
-                         callback = self.fontRefCallback)                                  
-                                  
+                                  "Ref",
+                                  callback=self.fontRefCallback)
+
         self.w.xHeightText = TextBox((xText, row2, 200, 17),
-                             "x-Height (in.)")
-        
+                                     "x-Height (in.)")
+
         self.w.xHeightSlider = Slider((x+2, row2+22, 194, 23),
-                               minValue = 0.5,
-                               maxValue = 2,
-                               value = self.xHeightDrawing / ppi,
-                               tickMarkCount = 7,
-                               stopOnTickMarks = True,
-                               callback = self.xHeightSliderCallback)
+                                      minValue=0.5,
+                                      maxValue=2,
+                                      value=self.xHeightDrawing / ppi,
+                                      tickMarkCount=7,
+                                      stopOnTickMarks=True,
+                                      callback=self.xHeightSliderCallback)
                                
         self.w.xHeightMinVal = TextBox((xText, row2+48, 50, 17),
-                               "0.5")
+                                       "0.5")
                                
         self.w.xHeightMidVal = TextBox((xText+85, row2+48, 50, 17),
-                               "1.25")                               
+                                       "1.25")                               
         
         self.w.xHeightMaxVal = TextBox((xText+177, row2+48, 50, 17),
-                               "2.0")
+                                       "2.0")
         
         self.w.guidesText = TextBox((xText, row3, 100, 17),
-                            "Guides")
+                                    "Guides")
                                                           
         self.w.ascenderCheckbox = CheckBox((x, row3+20, 100, 22),
-                                  "Ascender",
-                                  callback = self.ascenderCheckboxCallback)
+                                           "Ascender",
+                                           callback=self.ascenderCheckboxCallback)
         
         self.w.ascenderText = EditText((x+100, row3+20, 50, 22),
-                              ascender,
-                              callback = self.ascenderTextCallback)        
+                                       ascender,
+                                       callback=self.ascenderTextCallback)        
                                           
         self.w.descenderCheckbox = CheckBox((x, row3+45, 100, 22),
-                                   "Descender",
-                                   callback = self.descenderCheckboxCallback)
+                                            "Descender",
+                                            callback=self.descenderCheckboxCallback)
         
         self.w.descenderText = EditText((x+100, row3+45, 50, 22),
-                               descender,
-                               callback = self.descenderTextCallback)
+                                        descender,
+                                        callback=self.descenderTextCallback)
         
         self.w.extrasText = TextBox((xText, row4, 100, 17),
-                            "Extras")
+                                    "Extras")
         
         self.w.blueLinesCheckbox = CheckBox((x, row4+20, 150, 22),
-                                   "Non-photo blue lines",
-                                   callback = self.blueLinesCheckboxCallback)
+                                            "Non-photo blue lines",
+                                            callback=self.blueLinesCheckboxCallback)
                                    
         self.w.grayLettersCheckbox = CheckBox((x, row4+42, 150, 22),
-                                   "Gray letters",
-                                   callback = self.grayLettersCheckboxCallback)
+                                              "Gray letters",
+                                              callback=self.grayLettersCheckboxCallback)
                                   
         self.w.printButton = SquareButton((x, 430, 200, -10),
-                            "Print!\n(cmd + p)",
-                            callback = self.printButtonCallback)
-                            
+                                          "Print!\n(cmd + p)",
+                                          callback=self.printButtonCallback)
+
         self.w.printButton.bind('p', ["command"])
-         
+
         self.w.canvas = DrawView((220, 10, -10, -10))
-        
+
         if f is not None:
             self.w.fontNameText.enable(False)
-            
+
             self.w.inputText = GlyphSequenceEditText((x, row1+30, 200, 22),
-                               f.naked(),
-                               callback = self.inputTextCallback)
-            
+                                                     f.naked(),
+                                                     callback=self.inputTextCallback)
+
             self.w.ascenderText.enable(False)
             self.w.descenderText.enable(False)
-                                           
+
             self.w.saveButton = SquareButton((x, 370, 200, 50),
-                                "Save PDF!",
-                                callback = self.saveButtonCallback)
-                                
+                                             "Save PDF!",
+                                             callback=self.saveButtonCallback)
+
         else:
             self.w.fontRef.enable(False)
             self.w.inputText = EditText((x, 40, 200, 22),
-                               "No open font") 
+                                        "No open font") 
                                                  
             self.w.inputText.enable(False)
             self.w.grayLettersCheckbox.enable(False)
-            
         
     def fontNameTextCallback(self, sender):
-        
         self.drawing.fontName = str(sender.get())
         self.w.setTitle("Etch-A-Sketch: " + self.drawing.fontName)
         self.refreshCanvas()
-    
     
     def newFontNameTextCallback(self, sender):
         self.drawing.newFontName = str(sender.get())
         self.refreshCanvas()    
         
     def fontRefCallback(self, sender):
-        
         self.drawing.fontRef = sender.get()
         
         if self.drawing.fontRef == 1:
@@ -200,35 +192,25 @@ class EtchASketch(object):
             self.w.newFontNameText.show(False)
 
         self.refreshCanvas()
-            
-            
+
     def inputTextCallback(self, sender):
-        
         self.drawing.inputTextDrawing = sender.get()
         self.refreshCanvas()
-        
-        
+
     def xHeightSliderCallback(self, sender):
-        
         calculateMetrics((sender.get() * ppi))
         self.drawing.xHeightDrawing = sender.get() * ppi     
         self.refreshCanvas()
-        
-    
+
     def ascenderCheckboxCallback(self, sender):
-        
         self.drawing.ascenderBoxDrawing = sender.get()
         self.refreshCanvas()
 
-    
-    def descenderCheckboxCallback(self, sender):
-                
+    def descenderCheckboxCallback(self, sender): 
         self.drawing.descenderBoxDrawing = sender.get()
         self.refreshCanvas()
 
-
     def ascenderTextCallback(self, sender):
-       
         global ascender
         
         # Check if input is an integer; if not, input is the last ascender value
@@ -240,9 +222,7 @@ class EtchASketch(object):
         
         self.refreshCanvas()
 
-
     def descenderTextCallback(self, sender):
-        
         global descender
         
         # Catching non-digit input except for "-"... Maybe there's a better way
@@ -281,46 +261,42 @@ class EtchASketch(object):
             except ValueError:
                 self.w.descenderText.set(descender)
 
-            
     def grayLettersCheckboxCallback(self, sender):
-        
         self.drawing.grayLettersBoxDrawing = sender.get()
         self.refreshCanvas()
-    
-        
+
     def blueLinesCheckboxCallback(self, sender):
-        
         self.drawing.blueLinesBoxDrawing = sender.get()
         self.refreshCanvas()
-    
-        
+
     def saveButtonCallback(self, sender):
-        
         self.refreshCanvas()
         saveImage(fileToSave)
         self.w.close()
-    
-    
+
     def printButtonCallback(self, sender):
-        
         self.refreshCanvas()
         printImage()
-    
-    
+
     def refreshCanvas(self):
         self.drawing.pageSetup()
         self.drawing.drawLetters()
-        
+
         pdf = pdfImage()
         self.w.canvas.setPDFDocument(pdf)
 
 
-class Drawing():
-    
+class Drawing(object):
+    """
+    Drawing object that Etch-A-Sketch uses.
+    Not sure if necessary to encapsulate like this,
+    but trying for organization.
+    """
+
     # Values accepted from EtchASketch class
     def __init__(self, fontName, fontRef, newFontName, inputText, xHeightDrawing, ascenderBox,
                  descenderBox, blueLinesBox, grayLettersBox):
-         
+
         # Rename the variables with "self." so they can be used in this class
         self.fontName = fontName
         self.fontRef = fontRef
@@ -331,44 +307,39 @@ class Drawing():
         self.descenderBoxDrawing = descenderBox
         self.blueLinesBoxDrawing = blueLinesBox
         self.grayLettersBoxDrawing = grayLettersBox
-        
+
         self.pageSetup()
-        
-            
+
     def pageSetup(self):
-        
         def _calculateSketchLines():
-            
             if self.xHeightDrawing / ppi >= 1.75:
-                n = 1 
+                self.n = 1 
                 spaceTop = 220
             elif self.xHeightDrawing / ppi >= 1.25:
-                n = 2
+                self.n = 2
                 spaceTop = 130
             elif self.xHeightDrawing / ppi == 1:
-                n = 3
+                self.n = 3
                 spaceTop = 100
             elif self.xHeightDrawing / ppi == 0.75:
-                n = 4 
+                self.n = 4 
                 spaceTop = 90
             elif self.xHeightDrawing / ppi == 0.5:
-                n = 6
+                self.n = 6
                 spaceTop = 80
    
-            spacerRange = arange(0, n * 2.5, 2.5)
+            spacerRange = arange(0, self.n * 2.5, 2.5)
 
             self.xHeightList = []        
             self.baselineList = []
         
             for i in spacerRange:
                 spaceBetween = i * self.xHeightDrawing
-                                    
-                self.xHeightList.append(pageHeight- spaceTop - spaceBetween)
+                
+                self.xHeightList.append(pageHeight - spaceTop - spaceBetween)
                 self.baselineList.append(pageHeight - spaceTop - spaceBetween - self.xHeightDrawing)
                 
-        
         def _checkAscDesc(xHeightList, baselineList):
-            
             if self.ascenderBoxDrawing and self.descenderBoxDrawing == 1:                
                 _drawAscender(xHeightList, ascenderTarget)
                 _drawDescender(baselineList, descenderTarget)
@@ -379,9 +350,7 @@ class Drawing():
             elif self.descenderBoxDrawing == 1:
                 _drawDescender(baselineList, descenderTarget)
                       
-                           
         def _drawHeader():
-    
             self.dateTime = datetime.today().strftime("%m/%d/%y – %I:%M%p")
         
             cmykFill(0, 0, 0, 1, 1)
@@ -401,9 +370,7 @@ class Drawing():
             strokeWidth(0.5)
             line((marginLBR, pageHeight-40.5), (pageWidth-marginLBR, pageHeight-40.5))
 
-    
-        def _drawSketchLines(xHeightList, baselineList):        
-                         
+        def _drawSketchLines(xHeightList, baselineList):
             cmykFill(None)
             strokeWidth(0.5)
             
@@ -418,10 +385,8 @@ class Drawing():
         
             for baseline in baselineList:                     
                 line((marginLBR, baseline), (pageWidth - marginLBR, baseline)) # baseline
-            
-            
+
         def _drawAscender(xHeightList, ascenderTarget):
-            
             cmykFill(None)
             lineDash(3)
             strokeWidth(0.5)
@@ -436,9 +401,7 @@ class Drawing():
                 line((marginLBR, xHeight + ascenderTarget),
                      (pageWidth - marginLBR, xHeight + ascenderTarget))
 
-                     
         def _drawDescender(baselineList, descenderTarget):
-
             cmykFill(None)
             lineDash(3)
             strokeWidth(0.5)
@@ -451,8 +414,8 @@ class Drawing():
 
             for baseline in baselineList:
                 line((marginLBR, baseline + descenderTarget), (pageWidth - marginLBR, baseline + descenderTarget))
-        
-        
+
+
         newDrawing()
         newPage("LetterLandscape")
 
@@ -463,38 +426,48 @@ class Drawing():
         _calculateSketchLines()
         _drawSketchLines(self.xHeightList, self.baselineList)
         _checkAscDesc(self.xHeightList, self.baselineList)
-        
-        
-    def drawLetters(self):        
-            
+
+
+    def drawLetters(self):
         xFactor = calculateMetrics(self.xHeightDrawing)[0]
-        
-        if self.grayLettersBoxDrawing == 1:              
+        widthTotal = 0
+        rowCounter = 1
+
+        if self.grayLettersBoxDrawing == 1:
             cmykFill(0, 0, 0, .15, 1)
             cmykStroke(None)
-            
+
         else:
             cmykFill(0, 0, 0, 1, 1)
             cmykStroke(None)
-  
+
         translate(marginLBR, self.xHeightList[0] - self.xHeightDrawing)
-        
+
+        save()
+        scale(xFactor)
+
         for g in self.inputTextDrawing:
-    
+            widthTotal += f[g].width
+
+            if widthTotal * xFactor >= pageWidth - marginLBR * 2:
+                rowCounter += 1
+                translate(-widthTotal + f[g].width, -2.5 * self.xHeightDrawing / xFactor)
+                widthTotal = f[g].width
+
+                if rowCounter > self.n:
+                    break
+
             pen = CocoaPen(f)
-    
-            scale(xFactor)
-    
+
             f[g].draw(pen)
             drawPath(pen.path)
             translate(f[g].width, 0)
-    
-            scale(1/xFactor)
 
-                 
+        restore()
+
 try:
     EtchASketch()
-    
+
 except NameError:
     Message("Please install DrawBot module")
 
