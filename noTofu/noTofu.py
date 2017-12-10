@@ -1,23 +1,19 @@
 import string as s
 import re
-from defconAppKit.windows.baseWindow import BaseWindowController
 from vanilla import *
 from mojo.UI import CurrentSpaceCenter, OpenSpaceCenter
-from mojo.events import addObserver, removeObserver
 from robofab.interface.all.dialogs import Message
 
 def removeExtraSpaces(inputString):
     return re.sub(r"\  +", " ", inputString)
 
-class NoTofu(BaseWindowController):
+class NoTofu(object):
     def __init__(self):
-        self.font = CurrentFont()
-
         self.inputText, self.tofuText, self.outputText = "", "", ""
         self.ucCheck, self.lcCheck, self.digitCheck = 0, 0, 0
         self.punctCheck, self.copyToSCCheck = 0, 0
 
-        self.w = FloatingWindow((500, 610),
+        self.w = FloatingWindow((450, 610),
                                 "Mo Tofu Mo Problems")
 
         row = 10
@@ -32,49 +28,43 @@ class NoTofu(BaseWindowController):
         self.w.tofuText = EditText((10, row+25, -110, 50),
                                    callback=self.tofuTextCallback)
 
-        self.w.ucCheck = CheckBox((400, row+8, 100, 20),
+        self.w.ucCheck = CheckBox((350, row+8, 100, 20),
                                   "UC only",
                                   callback=self.ucCheckCallback)
 
-        self.w.lcCheck = CheckBox((400, row+30, 100, 20),
+        self.w.lcCheck = CheckBox((350, row+30, 100, 20),
                                   "lc only",
                                   callback=self.lcCheckCallback)
 
-        self.w.digitCheck = CheckBox((400, row+52, 100, 20),
+        self.w.digitCheck = CheckBox((350, row+52, 100, 20),
                                      "No digits",
                                      callback=self.digitCheckCallback)
 
-        self.w.punctCheck = CheckBox((400, row+74, 100, 20),
+        self.w.punctCheck = CheckBox((350, row+74, 100, 20),
                                      "No puncts.",
                                      callback=self.punctCheckCallback)
 
-        row += 90
-        self.w.tofuButton = Button((200, row, 100, 30),
+        row += 87
+        self.w.tofuButton = Button((175, row, 100, 30),
                                    "No Mo Tofu!",
                                    callback=self.tofuButtonCallback)
 
-        self.w.copyToSCCheck = CheckBox((100, row+5, 100, 20),
+        self.w.copyToSCCheck = CheckBox((75, row+5, 100, 20),
                                         "Copy to SC",
                                         callback=self.copyToSCCheckCallback)
 
-        row += 25
+        row += 30
         self.w.outputTitle = TextBox((10, row, 100, 20),
                                      "Output:")
 
         self.w.outputText = TextEditor((10, row+25, -10, 200),
                                        readOnly=True)
 
-        addObserver(self, "updateFont", "fontDidOpen")
-        self.setUpBaseWindowBehavior()
-
         self.w.open()
+        self.updateFont()
 
-    def updateFont(self, info):
-        self.font = info["font"]
-
-    def windowCloseCallback(self, sender):
-        removeObserver(self, "fontDidOpen")
-        super(NoTofu, self).windowCloseCallback(sender)
+    def updateFont(self):
+        self.font = CurrentFont()
 
     def inputTextCallback(self, sender):
         self.inputText = sender.get()
@@ -104,6 +94,8 @@ class NoTofu(BaseWindowController):
     def tofuButtonCallback(self, sender):
         self.outputText = self.inputText
         noBueno = self.tofuText
+
+        self.updateFont()
 
         if self.ucCheck == 1:
             self.outputText = self.inputText.upper()
