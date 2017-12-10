@@ -12,7 +12,7 @@ Script to help with sketching
 - Grayed-out letters (to simulate trace paper)
 
 Type some glyphs, print a sheet (or save a PDF), and sketch:
-![screenshot1](https://github.com/jtanadi/RoboFontScripts/blob/master/etchASketch/x-Screenshots/Screen%20Shot%202017-09-19%20at%2011.52.56%20AM.png)
+![screenshot1](https://github.com/jtanadi/robofontScripts/blob/master/etchASketch/x-Screenshots/Screen%20Shot%202017-12-09%20at%208.33.51%20PM.png)
 
 Sketch a new font using current font as reference:
 ![screenshot2](https://github.com/jtanadi/RoboFontScripts/blob/master/etchASketch/x-Screenshots/Screen%20Shot%202017-09-19%20at%2011.55.06%20AM.png)
