@@ -313,22 +313,22 @@ class Drawing(object):
     def pageSetup(self):
         def _calculateSketchLines():
             if self.xHeightDrawing / ppi >= 1.75:
-                self.n = 1 
+                self.totalRows = 1 
                 spaceTop = 220
             elif self.xHeightDrawing / ppi >= 1.25:
-                self.n = 2
+                self.totalRows = 2
                 spaceTop = 130
             elif self.xHeightDrawing / ppi == 1:
-                self.n = 3
+                self.totalRows = 3
                 spaceTop = 100
             elif self.xHeightDrawing / ppi == 0.75:
-                self.n = 4 
+                self.totalRows = 4 
                 spaceTop = 90
             elif self.xHeightDrawing / ppi == 0.5:
-                self.n = 6
+                self.totalRows = 6
                 spaceTop = 80
    
-            spacerRange = arange(0, self.n * 2.5, 2.5)
+            spacerRange = arange(0, self.totalRows * 2.5, 2.5)
 
             self.xHeightList = []        
             self.baselineList = []
@@ -454,7 +454,7 @@ class Drawing(object):
                 translate(-widthTotal + f[g].width, -2.5 * self.xHeightDrawing / xFactor)
                 widthTotal = f[g].width
 
-                if rowCounter > self.n:
+                if rowCounter > self.totalRows:
                     break
 
             pen = CocoaPen(f)
@@ -478,6 +478,5 @@ except NameError:
 + Make a DrawingTools version so it's not reliant on DrawBot - (is it possible? mojo.Canvas is a pain...)
 + Input string catches could be better... 
 + Expand to have typecooker mode?
-+ Allow inputText string to flow to 2nd line
 + Add Observer to update everything when CurrentFont is switched
 """
