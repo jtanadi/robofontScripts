@@ -45,7 +45,7 @@ class PatternPreview(BaseWindowController):
                                        "Column only",
                                        callback=self.colOnlyCallback)
 
-        addObserver(self, "chageGlyph", "viewDidChangeGlyph")
+        addObserver(self, "changeGlyph", "viewDidChangeGlyph")
         addObserver(self, "showPatternBackground", "drawBackground")
         addObserver(self, "showPatternPreview", "drawPreview")
 
@@ -103,7 +103,7 @@ class PatternPreview(BaseWindowController):
 
         super(PatternPreview, self).windowCloseCallback(sender)
 
-    def chageGlyph(self, info):
+    def changeGlyph(self, info):
         self.glyph = info.get("glyph", "")
 
     def showPatternBackground(self, info):
