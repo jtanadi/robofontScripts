@@ -108,10 +108,12 @@ class PatternPreview(BaseWindowController):
 
     def showPatternBackground(self, info):
         fill(0, 0, 0, 0.5)
+        stroke(None)
         self.drawPattern()
 
     def showPatternPreview(self, info):
         fill(0)
+        stroke(None)
         self.drawPattern()
 
     def drawPattern(self):
