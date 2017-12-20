@@ -4,18 +4,18 @@ Trying to figure out BasePen stuff...
 Bezier division math borrowed from Alexandre Saumier Demers's BroadNibBackground
 """
 
-from defconAppKit.windows.baseWindow import BaseWindowController
 from vanilla import *
+from defconAppKit.windows.baseWindow import BaseWindowController
 
 from mojo.drawingTools import *
 from mojo.canvas import Canvas
 from mojo.events import addObserver, removeObserver
 
+from fontTools.pens.basePen import BasePen
+
 # from drawBot import *
 # from drawBot.ui.drawView import DrawView
-
-from fontTools.pens.basePen import BasePen
-from fontTools.pens.cocoaPen import CocoaPen
+# from fontTools.pens.cocoaPen import CocoaPen
 
 
 class FacetPen(BasePen):
