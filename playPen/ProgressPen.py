@@ -120,7 +120,7 @@ class PreviewProgress(BaseWindowController):
         self.letters = ""
         self.progress = 0
 
-        self.w = FloatingWindow((1200, 600),
+        self.w = FloatingWindow((1200, 400),
                                 "Preview Progress")
 
         self.w.inputText = EditText((10, 10, 500, 24),
@@ -136,7 +136,7 @@ class PreviewProgress(BaseWindowController):
                                     callback=self.progressSliderCallback)
 
         self.w.canvas = Canvas((10, 50, -10, -10),
-                               canvasSize=(1500, 550),
+                               canvasSize=(1200, 350),
                                hasHorizontalScroller=False,
                                hasVerticalScroller=False,
                                delegate=self)
@@ -199,10 +199,10 @@ class PreviewProgress(BaseWindowController):
 
         fill(None)
         stroke(0)
-        strokeWidth(2.5)
+        strokeWidth(4)
 
-        translate(10, 140)
-        scale(.4)
+        translate(10, 90)
+        scale(.25)
 
         for letter in self.letters:
             glyph = self.fCopy[letter]
