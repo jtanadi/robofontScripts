@@ -13,15 +13,12 @@ from mojo.events import addObserver, removeObserver
 
 from fontTools.pens.basePen import BasePen
 
-# from drawBot import *
-# from drawBot.ui.drawView import DrawView
-# from fontTools.pens.cocoaPen import CocoaPen
-
+# Global parameter that affects the resolution of each curve & the number of progress "steps"
 SEGMENTS = 20
 
 class ProgressPen(BasePen):
     """
-    A pen that turns curves into facets. Similar to RoboFab FlattenPen.
+    A pen draws the "progress" of each glyph.
 
     This pen is a subclass of the FontTools BasePen and extends it
     by accepting the desired "progress" as a parameter.
@@ -91,13 +88,10 @@ class ProgressPen(BasePen):
         return points
 
     def drawProgress(self, points):
+        # Uses self.progress to determine the end of the points list
         for i in range(self.progress):
             x, y = points[i]
             lineTo((x, y))
-
-        # for point in points:
-        #     x, y = point
-        #     lineTo((x, y))
 
 
 def progressDrawGlyph(glyph, progress):
@@ -182,10 +176,8 @@ class PreviewProgress(BaseWindowController):
 
         for letter in self.letters:
             glyph = self.f[letter]
-
-            # myDrawGlyph(glyph)
+            
             progressDrawGlyph(glyph, int(self.progress))
-
             translate(glyph.width, 0)
 
 
