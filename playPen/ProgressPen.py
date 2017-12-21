@@ -3,7 +3,7 @@ Trying to figure out BasePen stuff...
 
 Bezier division math borrowed from Alexandre Saumier Demers's BroadNibBackground
 
-Each glyph needs to be decomposed, outlined, and broken at each point
+Each glyph needs to be decomposed, overlap removed, and broken at each point
 before running this script; otherwise the "progress" effect doesn't work.
 Maybe this can be done on-the-fly with another pen?
 """
@@ -17,7 +17,7 @@ from mojo.events import addObserver, removeObserver
 
 from fontTools.pens.basePen import BasePen
 
-# Global parameter that affects the resolution of each curve & the number of progress "steps"
+# Global variable that affects the resolution of each curve & the number of progress "steps"
 SEGMENTS = 20
 
 class ProgressPen(BasePen):
