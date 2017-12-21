@@ -3,9 +3,9 @@ Trying to figure out BasePen stuff...
 
 Bezier division math borrowed from Alexandre Saumier Demers's BroadNibBackground
 
-Each glyph needs to be decomposed, overlap removed, and broken at each point
-before running this script; otherwise the "progress" effect doesn't work.
-Maybe this can be done on-the-fly with another pen?
+The script makes a copy of the font, decomposes each copied glyph, removes overlaps,
+and breaks contours at each on-curve point. If this isn't done, the "progress" effect
+doesn't work... Maybe this can be done on-the-fly with another pen?
 """
 
 from vanilla import *
@@ -16,6 +16,8 @@ from mojo.canvas import Canvas
 from mojo.events import addObserver, removeObserver
 
 from fontTools.pens.basePen import BasePen
+
+import string as s
 
 # Global variable that affects the resolution of each curve & the number of progress "steps"
 SEGMENTS = 20
@@ -139,6 +141,8 @@ class PreviewProgress(BaseWindowController):
                                hasVerticalScroller=False,
                                delegate=self)
 
+        self.breakGlyphCopies()
+
         addObserver(self, "updateFont", "fontBecameCurrent")
         self.setUpBaseWindowBehavior()
 
@@ -146,6 +150,8 @@ class PreviewProgress(BaseWindowController):
 
     def updateFont(self, info):
         self.f = info.get("font", None)
+        self.breakGlyphCopies()
+
         self.w.canvas.update()
 
     def inputTextCallback(self, sender):
@@ -159,11 +165,32 @@ class PreviewProgress(BaseWindowController):
 
     def progressSliderCallback(self, sender):
         self.progress = sender.get()
+
         self.w.canvas.update()
 
     def windowCloseCallback(self, sender):
         removeObserver(self, "fontBecameCurrent")
         super(PreviewProgress, self).windowCloseCallback(sender)
+
+    def breakGlyphCopies(self):
+        """
+        Make a copy of the current font, then decompose & remove overlaps
+        from each glyph, and break contours at on-curve points.
+        """
+        self.fCopy = self.f.copy()
+
+        for glyph in self.fCopy:
+            if glyph.name in s.ascii_letters:
+
+                for comp in glyph.components:
+                    comp.decompose()
+
+                glyph.removeOverlap()
+
+                for contour in glyph:
+                    for point in contour.points:
+                        if point.type != "offCurve":
+                            contour.breakContour(point)
 
     def draw(self):
         """
@@ -178,7 +205,7 @@ class PreviewProgress(BaseWindowController):
         scale(.4)
 
         for letter in self.letters:
-            glyph = self.f[letter]
+            glyph = self.fCopy[letter]
 
             progressDrawGlyph(glyph, int(self.progress))
             translate(glyph.width, 0)
