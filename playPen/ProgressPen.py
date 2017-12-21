@@ -33,8 +33,7 @@ class ProgressPen(BasePen):
         self.progress = progress
 
     def _moveTo(self, (x, y)):
-        self.firstPoint = (x, y)
-        moveTo(self.firstPoint)
+        moveTo((x, y))
 
     def _lineTo(self, (x, y)):
         x0, y0 = self._getCurrentPoint()
