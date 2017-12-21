@@ -2,6 +2,10 @@
 Trying to figure out BasePen stuff...
 
 Bezier division math borrowed from Alexandre Saumier Demers's BroadNibBackground
+
+Each glyph needs to be decomposed, outlined, and broken at each point
+before running this script; otherwise the "progress" effect doesn't work.
+Maybe this can be done on-the-fly with another pen?
 """
 
 from vanilla import *
@@ -176,7 +180,7 @@ class PreviewProgress(BaseWindowController):
 
         for letter in self.letters:
             glyph = self.f[letter]
-            
+
             progressDrawGlyph(glyph, int(self.progress))
             translate(glyph.width, 0)
 
