@@ -173,7 +173,7 @@ class PreviewProgress(BaseWindowController):
 
         fill(None)
         stroke(0)
-        strokeWidth(2)
+        strokeWidth(2.5)
 
         translate(10, 140)
         scale(.4)
