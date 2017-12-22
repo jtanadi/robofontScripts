@@ -12,6 +12,7 @@ from mojo.canvas import Canvas
 from mojo.events import addObserver, removeObserver
 
 from fontTools.pens.basePen import BasePen
+from robofab.interface.all.dialogs import Message
 
 # from drawBot import *
 # from drawBot.ui.drawView import DrawView
@@ -193,5 +194,8 @@ class PreviewFacet(BaseWindowController):
 
             translate(glyph.width, 0)
 
+if CurrentFont() is not None:
+    PreviewFacet()
 
-PreviewFacet()
+else:
+    Message("You need to open a font!")
