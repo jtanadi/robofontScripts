@@ -147,20 +147,20 @@ class FacetDrawPen(FacetAbstractPen):
 
     def _closePath(self):
         x0, y0 = self._getCurrentPoint()
-        print "currentPt " + str((x0, y0))
         self.moveFlag = False
 
         if (x0, y0) != self.firstPoint:
             points = self._getPointsOnLine(self.segments, (x0, y0), self.firstPoint)
 
             self.drawSegments(points)
+        
         self.drawingPen.closePath()
         # print "closePath"
 
 
     def drawSegments(self, points):
         if self.moveFlag:
-            print "moveTo " + str(points)
+            # print "moveTo " + str(points)
             self.drawingPen.moveTo(points)
 
         else:
@@ -194,15 +194,11 @@ def facetDrawGlyph(glyph1, facets):
     for c in a.components:
         c.decompose()
 
-    # a.removeOverlap()
-
     pen = g.getPen()
     facetPen = FacetDrawPen(pen, f, facets)
 
     for contour in a.contours:
         contour.draw(facetPen)
-    # # a.clear()
-    # a.appendGlyph(a)
 
 
 class PreviewFacet(BaseWindowController):
