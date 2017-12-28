@@ -39,7 +39,6 @@ class FacetAbstractPen(BasePen):
         self.firstLine = True
 
     def _moveTo(self, (x, y)):
-        print "moveTo"
         self.firstPoint = (x, y)
         self.moveFlag = True
         self.firstLine = True
@@ -74,7 +73,9 @@ class FacetAbstractPen(BasePen):
 
             self.drawSegments(points)
 
-    # _endPath = _closePath
+
+    _endPath = _closePath
+
 
     def _getPointsOnLine(self, n, (x0, y0), (x1, y1)):
         points = [(x0, y0)]
@@ -128,6 +129,9 @@ class FacetPreviewPen(FacetAbstractPen):
             moveTo(points)
 
         else:
+            if self.firstLine:
+                points = points[1:]
+
             for point in points:
                 lineTo(point)
 
@@ -143,18 +147,20 @@ class FacetDrawPen(FacetAbstractPen):
 
     def _closePath(self):
         x0, y0 = self._getCurrentPoint()
+        print "currentPt " + str((x0, y0))
         self.moveFlag = False
 
         if (x0, y0) != self.firstPoint:
             points = self._getPointsOnLine(self.segments, (x0, y0), self.firstPoint)
 
             self.drawSegments(points)
-            self.drawingPen.closePath()
+        self.drawingPen.closePath()
+        # print "closePath"
 
 
     def drawSegments(self, points):
-        # pass
         if self.moveFlag:
+            print "moveTo " + str(points)
             self.drawingPen.moveTo(points)
 
         else:
@@ -162,6 +168,7 @@ class FacetDrawPen(FacetAbstractPen):
                 points = points[1:]
 
             for point in points:
+                # print "lineTo " + str(point)
                 self.drawingPen.lineTo(point)
 
 
@@ -176,17 +183,26 @@ def facetPreviewGlyph(glyph, facets):
     drawPath()
 
 
-def facetDrawGlyph(glyph1, glyph2, facets):
-    g = RGlyph()
+def facetDrawGlyph(glyph1, facets):
+    f = glyph1.getParent()
+
+    g = f.newGlyph(glyph1.name + ".alt")
     a = glyph1
 
     g.width = a.width
 
+    for c in a.components:
+        c.decompose()
+
+    # a.removeOverlap()
+
     pen = g.getPen()
-    facetPen = FacetDrawPen(pen, glyph1.getParent(), facets)
-    a.draw(facetPen)
-    glyph2.clear()
-    glyph2.appendGlyph(g)
+    facetPen = FacetDrawPen(pen, f, facets)
+
+    for contour in a.contours:
+        contour.draw(facetPen)
+    # # a.clear()
+    # a.appendGlyph(a)
 
 
 class PreviewFacet(BaseWindowController):
@@ -266,7 +282,12 @@ class PreviewFacet(BaseWindowController):
 
 
     def drawButtonCallback(self, sender):
-        facetDrawGlyph(self.f["a"], self.f["b"], self.facet)
+        self.f.prepareUndo("nope")
+
+        for letter in self.letters:
+            facetDrawGlyph(self.f[letter], self.facet)
+
+        self.f.performUndo()
 
 
     def windowCloseCallback(self, sender):
