@@ -3,7 +3,9 @@ Trying to figure out BasePen stuff...
 
 Bezier division math borrowed from Alexandre Saumier Demers's BroadNibBackground
 
-This is a second test: FacetPen is divided into 3 pens: FacetAbstractPen, FacetPreviewPen, FacetDrawPen.
+This is a second test: FacetPen is divided into 3 pens:
+FacetAbstractPen, FacetPreviewPen, FacetDrawPen.
+
 FacetAbstractPen does all the calculations without doing any drawing.
 FacetPreviewPen is a subclass of FacetAbstractPen and is used to preview drawings in a mojo canvas.
 FacetDrawPen is a subclass of FacetAbstractPen and is used to draw glyphs with previewed facets.
@@ -12,12 +14,12 @@ FacetDrawPen is a subclass of FacetAbstractPen and is used to draw glyphs with p
 from vanilla import *
 from defconAppKit.windows.baseWindow import BaseWindowController
 
-# from mojo.drawingTools import *
-# from mojo.canvas import Canvas
+from mojo.drawingTools import *
+from mojo.canvas import Canvas
 from mojo.events import addObserver, removeObserver
 
-from drawBot import *
-from drawBot.ui.drawView import DrawView
+# from drawBot import *
+# from drawBot.ui.drawView import DrawView
 
 from fontTools.pens.basePen import BasePen
 from robofab.interface.all.dialogs import Message
@@ -147,20 +149,19 @@ class FacetDrawPen(FacetAbstractPen):
 
     def _closePath(self):
         x0, y0 = self._getCurrentPoint()
+        print x0, y0
+        print self.firstPoint
         self.moveFlag = False
 
         if (x0, y0) != self.firstPoint:
             points = self._getPointsOnLine(self.segments, (x0, y0), self.firstPoint)
-
             self.drawSegments(points)
-        
+
         self.drawingPen.closePath()
-        # print "closePath"
 
 
     def drawSegments(self, points):
         if self.moveFlag:
-            # print "moveTo " + str(points)
             self.drawingPen.moveTo(points)
 
         else:
@@ -168,7 +169,6 @@ class FacetDrawPen(FacetAbstractPen):
                 points = points[1:]
 
             for point in points:
-                # print "lineTo " + str(point)
                 self.drawingPen.lineTo(point)
 
 
@@ -229,30 +229,30 @@ class PreviewFacet(BaseWindowController):
                                    title="Draw",
                                    callback=self.drawButtonCallback)
 
-        self.w.canvas = DrawView((10, 50, -10, -10))
-        # self.w.canvas = Canvas((10, 50, -10, -10),
-        #                        canvasSize=(1500, 550),
-        #                        hasHorizontalScroller=False,
-        #                        hasVerticalScroller=False,
-        #                        delegate=self)
+        # self.w.canvas = DrawView((10, 50, -10, -10))
+
+        self.w.canvas = Canvas((10, 50, -10, -10),
+                               canvasSize=(1500, 550),
+                               hasHorizontalScroller=False,
+                               hasVerticalScroller=False,
+                               delegate=self)
 
         addObserver(self, "updateFont", "fontBecameCurrent")
         self.setUpBaseWindowBehavior()
 
-        self.updateCanvas()
+        # self.updateCanvas()
+
         self.w.open()
 
 
     def updateCanvas(self):
-        newDrawing()
-        newPage(1200, 525)
+        # newDrawing()
+        # newPage(1200, 525)
+        # self.draw()
+        # pdfData = pdfImage()
+        # self.w.canvas.setPDFDocument(pdfData)
 
-        self.draw()
-
-        pdfData = pdfImage()
-        self.w.canvas.setPDFDocument(pdfData)
-        
-        # self.w.canvas.update()
+        self.w.canvas.update()
 
 
     def updateFont(self, info):
