@@ -11,8 +11,12 @@ doesn't work... Maybe this can be done on-the-fly with another pen?
 from vanilla import *
 from defconAppKit.windows.baseWindow import BaseWindowController
 
-from mojo.drawingTools import *
-from mojo.canvas import Canvas
+# from mojo.drawingTools import *
+# from mojo.canvas import Canvas
+
+from drawBot import *
+from drawBot.ui.drawView import DrawView
+
 from mojo.events import addObserver, removeObserver
 
 from fontTools.pens.basePen import BasePen
@@ -130,7 +134,7 @@ class PreviewProgress(BaseWindowController):
                                                  self.f.naked(),
                                                  callback=self.inputTextCallback)
 
-        self.w.facetSlider = Slider((520, 10, 250, 24),
+        self.w.facetSlider = Slider((520, 10, 325, 24),
                                     minValue=0,
                                     maxValue=SEGMENTS,
                                     value=self.progress,
@@ -138,22 +142,26 @@ class PreviewProgress(BaseWindowController):
                                     stopOnTickMarks=True,
                                     callback=self.progressSliderCallback)
 
-        self.w.scaleSlider = Slider((800, 10, 250, 24),
+        self.w.scaleSlider = Slider((865, 10, 325, 24),
                                     minValue=0,
                                     maxValue=0.5,
                                     value=self.scale,
                                     callback=self.scaleSliderCallback)
 
-        self.w.canvas = Canvas((10, 50, -10, -10),
-                               canvasSize=(1200, 350),
-                               hasHorizontalScroller=False,
-                               hasVerticalScroller=False,
-                               delegate=self)
+        # self.w.canvas = Canvas((10, 50, -10, -10),
+        #                        canvasSize=(1200, 350),
+        #                        hasHorizontalScroller=False,
+        #                        hasVerticalScroller=False,
+        #                        delegate=self)
+
+        self.w.canvas = DrawView((10, 50, -10, -10))
 
         self.breakGlyphCopies()
 
         addObserver(self, "updateFont", "fontBecameCurrent")
         self.setUpBaseWindowBehavior()
+
+        self.updateCanvas()
 
         self.w.open()
 
@@ -161,23 +169,37 @@ class PreviewProgress(BaseWindowController):
         self.f = info.get("font", None)
         self.breakGlyphCopies()
 
-        self.w.canvas.update()
+        self.updateCanvas()
 
     def inputTextCallback(self, sender):
-        # Making sure self.letters only contain alpha because Canvas will crash otherwise
+        #This doesn't work that well yet...
+        for letter in sender.get():
+            if letter not in self.fCopy:
+                self.w.inputText.set("".join(self.letters))
+
         self.letters = sender.get()
 
-        self.w.canvas.update()
+        self.updateCanvas()
 
     def progressSliderCallback(self, sender):
         self.progress = int(sender.get())
 
-        self.w.canvas.update()
+        self.updateCanvas()
 
     def scaleSliderCallback(self, sender):
         self.scale = sender.get()
 
-        self.w.canvas.update()
+        self.updateCanvas()
+
+    def updateCanvas(self):
+        newDrawing()
+        newPage(1200, 330)
+        self.draw()
+
+        pdf = pdfImage()
+        self.w.canvas.setPDFDocument(pdf)
+
+        # self.w.canvas.update()
 
     def windowCloseCallback(self, sender):
         removeObserver(self, "fontBecameCurrent")
@@ -191,17 +213,15 @@ class PreviewProgress(BaseWindowController):
         self.fCopy = self.f.copy()
 
         for glyph in self.fCopy:
-            if glyph.name in s.ascii_letters:
+            for comp in glyph.components:
+                comp.decompose()
 
-                for comp in glyph.components:
-                    comp.decompose()
+            glyph.removeOverlap()
 
-                glyph.removeOverlap()
-
-                for contour in glyph:
-                    for point in contour.points:
-                        if point.type != "offCurve":
-                            contour.breakContour(point)
+            for contour in glyph:
+                for point in contour.points:
+                    if point.type != "offCurve":
+                        contour.breakContour(point)
 
     def draw(self):
         """
