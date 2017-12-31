@@ -53,7 +53,7 @@ class EtchASketch(object):
         fontRef = 0
         self.xHeightDrawing = 0.5 * ppi
         inputText = ""
-        ascenderBox = descenderBox = blueLinesBox = grayLettersBox = 0
+        ascenderBox, descenderBox, blueLinesBox, grayLettersBox = 0, 0, 0, 0
         self.newFontName = "New Font"
 
         # Instantiate Drawing class (as "drawing") & pass the following variables
