@@ -17,6 +17,7 @@ from mojo.events import addObserver, removeObserver
 
 from fontTools.pens.basePen import BasePen
 from robofab.interface.all.dialogs import Message
+from lib.UI.spaceCenter.glyphSequenceEditText import GlyphSequenceEditText
 
 import string as s
 
@@ -120,21 +121,28 @@ class PreviewProgress(BaseWindowController):
         self.f = CurrentFont()
         self.letters = ""
         self.progress = 0
+        self.scale = 0.25
 
         self.w = FloatingWindow((1200, 400),
                                 "Preview Progress")
 
-        self.w.inputText = EditText((10, 10, 500, 24),
-                                    text=self.letters,
-                                    callback=self.inputTextCallback)
+        self.w.inputText = GlyphSequenceEditText((10, 10, 500, 24),
+                                                 self.f.naked(),
+                                                 callback=self.inputTextCallback)
 
-        self.w.facetSlider = Slider((520, 10, 400, 24),
+        self.w.facetSlider = Slider((520, 10, 250, 24),
                                     minValue=0,
                                     maxValue=SEGMENTS,
                                     value=self.progress,
                                     tickMarkCount=SEGMENTS,
                                     stopOnTickMarks=True,
                                     callback=self.progressSliderCallback)
+
+        self.w.scaleSlider = Slider((800, 10, 250, 24),
+                                    minValue=0,
+                                    maxValue=0.5,
+                                    value=self.scale,
+                                    callback=self.scaleSliderCallback)
 
         self.w.canvas = Canvas((10, 50, -10, -10),
                                canvasSize=(1200, 350),
@@ -165,7 +173,12 @@ class PreviewProgress(BaseWindowController):
         self.w.canvas.update()
 
     def progressSliderCallback(self, sender):
-        self.progress = sender.get()
+        self.progress = int(sender.get())
+
+        self.w.canvas.update()
+
+    def scaleSliderCallback(self, sender):
+        self.scale = sender.get()
 
         self.w.canvas.update()
 
@@ -203,12 +216,12 @@ class PreviewProgress(BaseWindowController):
         strokeWidth(4)
 
         translate(10, 90)
-        scale(.25)
+        scale(self.scale)
 
         for letter in self.letters:
             glyph = self.fCopy[letter]
 
-            progressDrawGlyph(glyph, int(self.progress))
+            progressDrawGlyph(glyph, self.progress)
             translate(glyph.width, 0)
 
 if CurrentFont() is not None:
