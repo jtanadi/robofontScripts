@@ -23,6 +23,7 @@ from mojo.events import addObserver, removeObserver
 
 from fontTools.pens.basePen import BasePen
 from robofab.interface.all.dialogs import Message
+from lib.UI.spaceCenter.glyphSequenceEditText import GlyphSequenceEditText
 
 
 class FacetAbstractPen(BasePen):
@@ -209,21 +210,28 @@ class PreviewFacet(BaseWindowController):
         self.f = CurrentFont()
         self.letters = ""
         self.facet = 5
+        self.scale = 0.25
 
         self.w = FloatingWindow((1200, 600),
                                 "Preview Facet")
 
-        self.w.inputText = EditText((10, 10, 500, 24),
-                                    text=self.letters,
-                                    callback=self.inputTextCallback)
+        self.w.inputText = GlyphSequenceEditText((10, 10, 500, 24),
+                                                 self.f.naked(),
+                                                 callback=self.inputTextCallback)
 
-        self.w.facetSlider = Slider((520, 10, 500, 24),
+        self.w.facetSlider = Slider((520, 10, 250, 24),
                                     minValue=2,
                                     maxValue=9,
                                     value=self.facet,
                                     tickMarkCount=10,
                                     stopOnTickMarks=True,
                                     callback=self.facetSliderCallback)
+
+        self.w.scaleSlider = Slider((800, 10, 250, 24),
+                                    minValue=0,
+                                    maxValue=0.5,
+                                    value=self.scale,
+                                    callback=self.scaleSliderCallback)
 
         self.w.drawButton = Button((1090, 10, 100, 24),
                                    title="Draw",
@@ -262,10 +270,6 @@ class PreviewFacet(BaseWindowController):
 
 
     def inputTextCallback(self, sender):
-        # Making sure self.letters only contain alpha because Canvas will crash otherwise
-        if not sender.get().isalpha():
-            self.w.inputText.set(self.letters)
-
         self.letters = sender.get()
 
         self.updateCanvas()
@@ -276,6 +280,10 @@ class PreviewFacet(BaseWindowController):
 
         self.updateCanvas()
 
+    def scaleSliderCallback(self, sender):
+        self.scale = sender.get()
+
+        self.updateCanvas()
 
     def drawButtonCallback(self, sender):
         self.f.prepareUndo("nope")
@@ -296,7 +304,7 @@ class PreviewFacet(BaseWindowController):
         stroke(None)
 
         translate(10, 140)
-        scale(.4)
+        scale(self.scale)
 
         for letter in self.letters:
             glyph = self.f[letter]
