@@ -165,9 +165,6 @@ class PreviewProgress(BaseWindowController):
 
     def inputTextCallback(self, sender):
         # Making sure self.letters only contain alpha because Canvas will crash otherwise
-        if not sender.get().isalpha():
-            self.w.inputText.set(self.letters)
-
         self.letters = sender.get()
 
         self.w.canvas.update()
