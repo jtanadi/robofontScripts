@@ -233,8 +233,8 @@ class PreviewFacet(BaseWindowController):
                                     value=self.scale,
                                     callback=self.scaleSliderCallback)
 
-        self.w.drawButton = Button((1090, 10, 100, 24),
-                                   title="Draw",
+        self.w.drawButton = Button((1070, 10, 120, 24),
+                                   title="Make Glyphs",
                                    callback=self.drawButtonCallback)
 
         # self.w.canvas = DrawView((10, 50, -10, -10))
