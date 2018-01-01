@@ -208,7 +208,7 @@ class PreviewProgress(BaseWindowController):
     def breakGlyphCopies(self):
         """
         Make a copy of the current font, then decompose & remove overlaps
-        from each glyph, and break contours at on-curve points.
+        from each glyph, and finally break contours at on-curve points.
         """
         self.fCopy = self.f.copy()
 
@@ -218,6 +218,9 @@ class PreviewProgress(BaseWindowController):
 
             glyph.removeOverlap()
 
+        # for some reason breaking at each point
+        # works best as a separate "for glyph in font" loop
+        for glyph in self.fCopy:
             for contour in glyph:
                 for point in contour.points:
                     if point.type != "offCurve":
