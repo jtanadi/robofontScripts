@@ -157,10 +157,10 @@ class SimpleWindowObserver(BaseWindowController):
     
     def widthSliderCallback(self, sender):
         self.widthValue = sender.get()
-        CurrentGlyph().update()
+        UpdateCurrentGlyphView()
     
     def startStopButtonCallback(self, sender):
-        CurrentGlyph().update()
+        UpdateCurrentGlyphView()
         # button callback, check the title
         if sender.getTitle() == "Start":
             # set "Stop" as title for the button
@@ -191,7 +191,7 @@ class SimpleWindowObserver(BaseWindowController):
         removeObserver(self, "drawInactive")
         # and send the notification to the super
         super(SimpleWindowObserver, self).windowCloseCallback(sender)
-        CurrentGlyph().update()
+        UpdateCurrentGlyphView()
         
     
 SimpleWindowObserver()
