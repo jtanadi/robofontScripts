@@ -4,6 +4,7 @@ Trying to figure out BasePen stuff...
 Update docstring please!
 """
 from math import atan2, degrees, sqrt
+import random as r
 from vanilla import *
 from defconAppKit.windows.baseWindow import BaseWindowController
 
@@ -42,7 +43,7 @@ class StrokePen(BasePen):
         x, y = pt
         
         db.fill(None)
-        db.stroke(0, 0, 1, 1)
+        db.stroke(r.random(), r.random(), r.random(), 1)
         db.strokeWidth(self.width)
         
         # db.newPath()
@@ -69,7 +70,7 @@ class StrokePen(BasePen):
         x0, y0 = self._getCurrentPoint()
         
         db.fill(None)
-        db.stroke(0, 0, 1, 1)
+        db.stroke(r.random(), r.random(), r.random(), 1)
         db.strokeWidth(self.width)
 
         # db.newPath()
