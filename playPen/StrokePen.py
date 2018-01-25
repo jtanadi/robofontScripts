@@ -226,8 +226,7 @@ class PreviewStroke(BaseWindowController):
             if getAngle(pt0, pt1) >= 90 or getAngle(pt0, pt1) <= -90:
                 rotateFlag = True
                 db.translate(0, -820)
-            
-            print getAngle(pt0, pt1)                
+                           
             db.newPath()
             pen = StrokePen(glyph.getParent(), self.widthValue)
             glyph.draw(pen)
