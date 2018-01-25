@@ -22,6 +22,28 @@ import string as s
 # Global variable for max width for easy adjustment
 MAXWIDTH = 100
 
+def getAngle(pt0, pt1):
+    """
+    Returns angle between 2 points, in degrees
+    """
+    x0, y0 = pt0
+    x1, y1 = pt1
+    
+    xDiff = x1 - x0
+    yDiff = y1 - y0
+    
+    return degrees(atan2(yDiff, xDiff))
+    
+def getDistance(pt0, pt1):
+    """
+    Returns distance between two points
+    """
+    x0, y0 = pt0
+    x1, y1 = pt1
+    
+    return sqrt((x1 - x0)**2 + (y1 - y0)**2)
+
+
 class StrokePen(BasePen):
     """
     A pen draws the strokes of glyph.
@@ -103,26 +125,7 @@ class StrokePen(BasePen):
             db.newPath()
             db.oval(x - self.width / 2, y - self.width / 2, self.width, self.width)
   
-    def getAngle(self, pt0, pt1):
-        """
-        Returns angle between 2 points, in degrees
-        """
-        x0, y0 = pt0
-        x1, y1 = pt1
-        
-        xDiff = x1 - x0
-        yDiff = y1 - y0
-        
-        return degrees(atan2(yDiff, xDiff))
-        
-    def getDistance(self, pt0, pt1):
-        """
-        Returns distance between two points
-        """
-        x0, y0 = pt0
-        x1, y1 = pt1
-        
-        return sqrt((x1 - x0)**2 + (y1 - y0)**2)
+
 
 
 class PreviewStroke(BaseWindowController):
@@ -131,12 +134,12 @@ class PreviewStroke(BaseWindowController):
     """
 
     def __init__(self):
-        self.f = RFont("/Users/jesentanadi/Dropbox/1-Type/z-Scripts/_JT/0-Fonts for Testing/rectPen_TESTFONT.ufo")
+        self.f = CurrentFont()
         self.letters = ""
         self.widthValue = 55
         self.scale = 0.25
 
-        self.w = FloatingWindow((1200, 400),
+        self.w = FloatingWindow((1200, 800),
                                 "Preview Width")
 
         self.w.inputText = GlyphSequenceEditText((10, 10, 500, 24),
@@ -192,7 +195,7 @@ class PreviewStroke(BaseWindowController):
 
     def updateCanvas(self):
         db.newDrawing()
-        db.newPage(1200, 330)
+        db.newPage(1200, 740)
         self.draw()
 
         pdf = db.pdfImage()
@@ -208,18 +211,33 @@ class PreviewStroke(BaseWindowController):
         This function is what Canvas calls to draw
         """
 
-        db.translate(10, 90)
+        db.translate(400, 400)
         db.scale(self.scale)
 
         for letter in self.letters:
+            rotateFlag = False
             glyph = self.f[letter]
             
+            pt0 = (glyph.contours[0].points[0].x, glyph.contours[0].points[0].y)
+            pt1 = (glyph.contours[0].points[1].x, glyph.contours[0].points[1].y)
+            pt2 = (glyph.contours[0].points[-2].x, glyph.contours[0].points[-2].y)
+            pt3 = (glyph.contours[0].points[-1].x, glyph.contours[0].points[-1].y)
+            
+            if getAngle(pt0, pt1) >= 90 or getAngle(pt0, pt1) <= -90:
+                rotateFlag = True
+                db.translate(0, -820)
+            
+            print getAngle(pt0, pt1)                
             db.newPath()
             pen = StrokePen(glyph.getParent(), self.widthValue)
             glyph.draw(pen)
             db.drawPath()
             
-            db.translate(glyph.width, 0)
+            if rotateFlag:
+                db.rotate(-90)
+                db.translate(0, 0)
+            else:
+                db.translate(glyph.width, 0)
 
 
 try:
