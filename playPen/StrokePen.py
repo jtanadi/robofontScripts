@@ -169,7 +169,6 @@ class PreviewStroke(BaseWindowController):
 
     def updateFont(self, info):
         self.f = info.get("font", None)
-        self.breakGlyphCopies()
 
         self.updateCanvas()
 
