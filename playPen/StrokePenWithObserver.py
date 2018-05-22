@@ -9,8 +9,8 @@ import vanilla
 from defconAppKit.windows.baseWindow import BaseWindowController
 
 from mojo.drawingTools import *
-
 from mojo.events import addObserver, removeObserver
+from mojo.UI import UpdateCurrentGlyphView
 
 from fontTools.pens.basePen import BasePen
 from robofab.interface.all.dialogs import Message
