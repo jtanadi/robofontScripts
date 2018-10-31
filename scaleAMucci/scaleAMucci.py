@@ -1,4 +1,4 @@
-from robofab.interface.all.dialogs import Message
+from mojo.UI import Message
 from vanilla import *
 from mojo.drawingTools import *
 from mojo.canvas import Canvas

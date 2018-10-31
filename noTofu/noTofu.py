@@ -2,7 +2,7 @@ import string as s
 import re
 from vanilla import *
 from mojo.UI import CurrentSpaceCenter, OpenSpaceCenter
-from robofab.interface.all.dialogs import Message
+from mojo.UI import Message
 
 def removeExtraSpaces(inputString):
     return re.sub(r"\  +", " ", inputString)

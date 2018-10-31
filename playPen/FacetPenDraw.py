@@ -22,7 +22,7 @@ from mojo.events import addObserver, removeObserver
 # from drawBot.ui.drawView import DrawView
 
 from fontTools.pens.basePen import BasePen
-from robofab.interface.all.dialogs import Message
+from mojo.UI import Message
 from lib.UI.spaceCenter.glyphSequenceEditText import GlyphSequenceEditText
 
 

@@ -1,4 +1,4 @@
-from robofab.interface.all.dialogs import SelectGlyph
+from mojo.UI import SelectGlyph
 
 f = CurrentFont()
 

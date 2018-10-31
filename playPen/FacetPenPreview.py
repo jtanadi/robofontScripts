@@ -12,7 +12,7 @@ from mojo.canvas import Canvas
 from mojo.events import addObserver, removeObserver
 
 from fontTools.pens.basePen import BasePen
-from robofab.interface.all.dialogs import Message
+from mojo.UI import Message
 
 # from drawBot import *
 # from drawBot.ui.drawView import DrawView
