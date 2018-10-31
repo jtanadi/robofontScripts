@@ -1,12 +1,11 @@
 from vanilla import *
 from drawBot import *
+from mojo.UI import Message
 from drawBot.ui.drawView import DrawView
 from fontTools.pens.cocoaPen import CocoaPen
-from numpy import arange
 from lib.UI.spaceCenter.glyphSequenceEditText import GlyphSequenceEditText
 from datetime import datetime
 import re
-from robofab.interface.all.dialogs import Message
 
 f = CurrentFont()
 
@@ -45,6 +44,11 @@ def calculateMetrics(xHeightDrawing):
 
     return xFactor, ascenderTarget, descenderTarget
 
+def frange(start, stop, step):
+    i = start
+    while i < stop:
+        yield i
+        i += step
 
 class EtchASketch(object):
     def __init__(self):
@@ -94,13 +98,21 @@ class EtchASketch(object):
         self.w.xHeightText = TextBox((xText, row2, 200, 17),
                                      "x-Height (in.)")
 
-        self.w.xHeightSlider = Slider((x+2, row2+22, 194, 23),
+        self.w.xHeightSlider = Slider((x+2, row2+22, 194, 24),
                                       minValue=0.5,
                                       maxValue=2,
                                       value=self.xHeightDrawing / ppi,
                                       tickMarkCount=7,
                                       stopOnTickMarks=True,
-                                      callback=self.xHeightSliderCallback)
+                                      callback=self.xHeightSliderCallback,
+                                      sizeStyle='small')
+        # self.w.xHeightSlider = Slider((2, 22, 194, 230),
+        #                               minValue=0.5,
+        #                               maxValue=2,
+        #                               value=self.xHeightDrawing / ppi,
+        #                               tickMarkCount=7,
+        #                               stopOnTickMarks=True,
+        #                               callback=self.xHeightSliderCallback)
                                
         self.w.xHeightMinVal = TextBox((xText, row2+48, 50, 17),
                                        "0.5")
@@ -328,7 +340,7 @@ class Drawing(object):
                 self.totalRows = 6
                 spaceTop = 80
    
-            spacerRange = arange(0, self.totalRows * 2.5, 2.5)
+            spacerRange = frange(0, self.totalRows * 2.5, 2.5)
 
             self.xHeightList = []        
             self.baselineList = []

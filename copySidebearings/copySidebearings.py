@@ -1,4 +1,4 @@
-from robofab.interface.all.dialogs import Message
+from mojo.UI import Message
 from vanilla import *
 import re
 
