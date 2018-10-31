@@ -98,7 +98,7 @@ class EtchASketch(object):
         self.w.xHeightText = TextBox((xText, row2, 200, 17),
                                      "x-Height (in.)")
 
-        self.w.xHeightSlider = Slider((x+2, row2+22, 194, 24),
+        self.w.xHeightSlider = Slider((x+2, row2+22, 194, 23),
                                       minValue=0.5,
                                       maxValue=2,
                                       value=self.xHeightDrawing / ppi,
@@ -106,14 +106,9 @@ class EtchASketch(object):
                                       stopOnTickMarks=True,
                                       callback=self.xHeightSliderCallback,
                                       sizeStyle='small')
-        # self.w.xHeightSlider = Slider((2, 22, 194, 230),
-        #                               minValue=0.5,
-        #                               maxValue=2,
-        #                               value=self.xHeightDrawing / ppi,
-        #                               tickMarkCount=7,
-        #                               stopOnTickMarks=True,
-        #                               callback=self.xHeightSliderCallback)
-                               
+
+        self.w.xHeightSlider.getNSSlider().setVertical_(False) # Set this explicitly
+
         self.w.xHeightMinVal = TextBox((xText, row2+48, 50, 17),
                                        "0.5")
                                
@@ -363,17 +358,18 @@ class Drawing(object):
                 _drawDescender(baselineList, descenderTarget)
                       
         def _drawHeader():
-            self.dateTime = datetime.today().strftime("%m/%d/%y – %I:%M%p")
+            self.dateTime = datetime.today().strftime("%m/%d/%y %I:%M%p")
         
             cmykFill(0, 0, 0, 1, 1)
             cmykStroke(None)
             font("VulfMono-Light", 8)
             fallbackFont("Courier")
+            fallbackFont("Helvetica")
 
             if self.fontRef == 0:
                 nameString = self.fontName
             else:
-                nameString = self.newFontName + " (Ref: %s)" % self.fontName
+                nameString = "%s (Ref: %s)" %(self.newFontName, self.fontName)
                 
             text(nameString + " – " + self.dateTime, (marginLBR, pageHeight-27))
 
