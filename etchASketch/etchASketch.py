@@ -9,6 +9,8 @@ import re
 
 f = CurrentFont()
 
+ISFULL = False
+
 if f is not None:
     # Font Info
     xHeightCurrent = f.info.xHeight
@@ -201,6 +203,11 @@ class EtchASketch(object):
         self.refreshCanvas()
 
     def inputTextCallback(self, sender):
+        
+        # if ISFULL:
+        #     print("full")
+        #     pass
+
         self.drawing.inputTextDrawing = sender.get()
         self.refreshCanvas()
 
@@ -457,18 +464,30 @@ class Drawing(object):
         for g in self.inputTextDrawing:
             widthTotal += f[g].width
 
+            
+
+            # If the total width >= sketch area, start the next row
             if widthTotal * xFactor >= pageWidth - marginLBR * 2:
                 rowCounter += 1
+                print(rowCounter, self.totalRows)
+                # Prevent more than total number of rows from being drawn
+                
                 translate(-widthTotal + f[g].width, -2.5 * self.xHeightDrawing / xFactor)
                 widthTotal = f[g].width
 
-                if rowCounter > self.totalRows:
-                    break
+            if rowCounter > self.totalRows:
+                global ISFULL
+                ISFULL = True
+                print(ISFULL)
+                break
 
-            pen = CocoaPen(f)
+            # Use #drawGlyph() out of the box
+            drawGlyph(f[g])
 
-            f[g].draw(pen)
-            drawPath(pen.path)
+            # It's basically this
+            # pen = CocoaPen(f)
+            # f[g].draw(pen)
+            # drawPath(pen.path)
             translate(f[g].width, 0)
 
         restore()
