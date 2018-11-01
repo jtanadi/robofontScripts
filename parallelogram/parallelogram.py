@@ -1,4 +1,4 @@
-from mojo.drawingTools import *
+import mojo.drawingTools as dt
 from mojo.events import addObserver, removeObserver
 from mojo.UI import UpdateCurrentGlyphView
 from vanilla import FloatingWindow
@@ -6,20 +6,20 @@ from defconAppKit.windows.baseWindow import BaseWindowController
 
 class Parallelogram(BaseWindowController):
     def __init__(self):
+        # These are lists so we can track how many of each is selected
+        self.selectedContours = []
+        self.selectedSegments = []
+
         self.w = FloatingWindow((150, 25), "Parallelogram")
         
-        addObserver(self, "drawLines", "draw")    
+        addObserver(self, "findSelection", "draw")    
         self.setUpBaseWindowBehavior()
         self.w.open()
-    
-    def stopButtonCB(self, sender):
-        removeObserver(self, "draw")
 
-    def collectPoints(self, glyph):
+    def collectPointsInContour(self, contour):
         pointsList = []
-        for contour in glyph.contours:
-            for point in contour.points:
-                pointsList.append(point)
+        for point in contour.points:
+            pointsList.append(point)
         
         return pointsList
         
@@ -46,46 +46,66 @@ class Parallelogram(BaseWindowController):
         # instead of checking for absolute equality (m1 == m2),
         # allow for some tolerance
         return abs(m1 - m2) <= tolerance
-        
-    def drawLines(self, info): 
+    
+    def findSelection(self, info):
         g = info["glyph"]
-        
-        selectedSegment = None
-        
-        # this should be all points of selected contour
-        allPoints = self.collectPoints(g)
-        selectedOnCurves = []
-        selectedOffCurves = []
-        
-        # Find selected segment... is this the best way (ie. do I have to iterate?)
+
+        self.selectedContours = []
+        self.selectedSegments = []
+
+        # Find selected segment... 
+        # is this the best way (ie. do I have to iterate?)
         for contour in g.contours:
-            for segment in contour:                
+            for segment in contour:
+                # When segments are selected, add to list and log the parent contour
                 if segment.selected:
-                    selectedSegment = segment
+                    if segment.type != "curve":
+                        return
+                    self.selectedSegments.append(segment)
+                    if segment.contour not in self.selectedContours:
+                        self.selectedContours.append(segment.contour)
+                # Maybe point is selected instead, so iterate to see
+                # if a point is selected, and then find its segment
+                else:
+                    for point in segment.points:
+                        if point.type == "offcurve" and point.selected:
+                            self.selectedSegments.append(segment)
+                            if segment.contour not in self.selectedContours:
+                                self.selectedContours.append(segment.contour)
+
+        self.drawLines(info["scale"])
         
-        if selectedSegment is None:
+    def drawLines(self, lineThickness):
+        # Don't do anything if no segments have been selected,
+        # or if more than 1 contour has been selected
+        if not self.selectedSegments or len(self.selectedContours) > 1:
             return
-            
-        for point in selectedSegment.points:
-            if point.type == "offcurve":
-                selectedOffCurves.append(point)
+
+        contourPoints = self.collectPointsInContour(self.selectedContours[0])
+
+        for segment in self.selectedSegments:
+            selectedOnCurves = []
+            selectedOffCurves = []
+            for point in segment.points:
+                if point.type == "offcurve":
+                    selectedOffCurves.append(point)
+                else:
+                    selectedOnCurves.append(point)
+                    
+            pt0 = self.findPrevOnCurvePt(selectedOnCurves[0], contourPoints).position
+            pt1 = selectedOnCurves[0].position
+            pt2 = selectedOffCurves[0].position
+            pt3 = selectedOffCurves[1].position
+
+            # if lines are parallel, lines are green; otherwise, red
+            if self.areTheyParallel((pt0, pt1), (pt2, pt3)):
+                dt.stroke(0, 1, 0, 1)
             else:
-                selectedOnCurves.append(point)
-                
-        pt0 = self.findPrevOnCurvePt(selectedOnCurves[0], allPoints).position
-        pt1 = selectedOnCurves[0].position
-        pt2 = selectedOffCurves[0].position
-        pt3 = selectedOffCurves[1].position
+                dt.stroke(1, 0, 0, 1)
 
-        # if lines are parallel, lines are green
-        if self.areTheyParallel((pt0, pt1), (pt2, pt3)):
-            stroke(0, 1, 0, 1)
-        else:
-            stroke(1, 0, 0, 1)
-
-        strokeWidth(0.5)
-        line(pt0, pt1)
-        line(pt2, pt3)
+            dt.strokeWidth(lineThickness)
+            dt.line(pt0, pt1)
+            dt.line(pt2, pt3)
         
     def windowCloseCallback(self, sender):
         removeObserver(self, "draw")
