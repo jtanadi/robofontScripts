@@ -35,13 +35,22 @@ class Parallelogram(BaseWindowController):
             if pt == point:
                 return onCurves[index - 1]
 
+    def _calcSlope(self, pt1, pt2):
+        (xA, yA) = pt1
+        (xB, yB) = pt2
+
+        try:
+            return (yB - yA) / (xB - xA)
+        except ZeroDivisionError:
+            return 0 # Not entirely accurate for vertical lines, but works
+
     def _checkParallel(self, line1, line2):        
         ((x0, y0), (x1, y1)) = line1
         ((x2, y2), (x3, y3)) = line2
         tolerance = .05 # arbitrary
 
-        m1 = (y1 - y0) / (x1 - x0)
-        m2 = (y3 - y2) / (x3 - x2)
+        m1 = self._calcSlope((x0, y0), (x1, y1))
+        m2 = self._calcSlope((x2, y2), (x3, y3))
 
         # instead of checking for absolute equality (m1 == m2),
         # allow for some tolerance
