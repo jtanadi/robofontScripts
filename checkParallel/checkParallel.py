@@ -4,7 +4,7 @@ from mojo.UI import UpdateCurrentGlyphView
 from vanilla import FloatingWindow
 from defconAppKit.windows.baseWindow import BaseWindowController
 
-class Parallelogram(BaseWindowController):
+class CheckParallel(BaseWindowController):
     def __init__(self):
         # These are lists so we can track how many of each is selected
         self.selectedContours = []
@@ -122,4 +122,4 @@ class Parallelogram(BaseWindowController):
         UpdateCurrentGlyphView()
         super(Parallelogram, self).windowCloseCallback(sender)
                
-Parallelogram()
+CheckParallel()
