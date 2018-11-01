@@ -16,14 +16,14 @@ class Parallelogram(BaseWindowController):
         self.setUpBaseWindowBehavior()
         self.w.open()
 
-    def collectPointsInContour(self, contour):
+    def _collectPointsInContour(self, contour):
         pointsList = []
         for point in contour.points:
             pointsList.append(point)
         
         return pointsList
         
-    def findPrevOnCurvePt(self, point, pointsList):
+    def _findPrevOnCurvePt(self, point, pointsList):
         onCurves = []
         # Find all the non offcurves
         for pt in pointsList:
@@ -35,7 +35,7 @@ class Parallelogram(BaseWindowController):
             if pt == point:
                 return onCurves[index - 1]
 
-    def areTheyParallel(self, line1, line2):        
+    def _checkParallel(self, line1, line2):        
         ((x0, y0), (x1, y1)) = line1
         ((x2, y2), (x3, y3)) = line2
         tolerance = .05 # arbitrary
@@ -82,7 +82,7 @@ class Parallelogram(BaseWindowController):
         if not self.selectedSegments or len(self.selectedContours) > 1:
             return
 
-        contourPoints = self.collectPointsInContour(self.selectedContours[0])
+        contourPoints = self._collectPointsInContour(self.selectedContours[0])
 
         for segment in self.selectedSegments:
             selectedOnCurves = []
@@ -93,13 +93,13 @@ class Parallelogram(BaseWindowController):
                 else:
                     selectedOnCurves.append(point)
                     
-            pt0 = self.findPrevOnCurvePt(selectedOnCurves[0], contourPoints).position
+            pt0 = self._findPrevOnCurvePt(selectedOnCurves[0], contourPoints).position
             pt1 = selectedOnCurves[0].position
             pt2 = selectedOffCurves[0].position
             pt3 = selectedOffCurves[1].position
 
             # if lines are parallel, lines are green; otherwise, red
-            if self.areTheyParallel((pt0, pt1), (pt2, pt3)):
+            if self._checkParallel((pt0, pt1), (pt2, pt3)):
                 dt.stroke(0, 1, 0, 1)
             else:
                 dt.stroke(1, 0, 0, 1)
