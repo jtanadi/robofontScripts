@@ -38,11 +38,11 @@ class Parallelogram(BaseWindowController):
     def areTheyParallel(self, line1, line2):        
         ((x0, y0), (x1, y1)) = line1
         ((x2, y2), (x3, y3)) = line2
-        tolerance = .025 # arbitrary
+        tolerance = .05 # arbitrary
 
         m1 = (y1 - y0) / (x1 - x0)
         m2 = (y3 - y2) / (x3 - x2)
-        print(m1, m2)
+
         # instead of checking for absolute equality (m1 == m2),
         # allow for some tolerance
         return abs(m1 - m2) <= tolerance
@@ -51,6 +51,8 @@ class Parallelogram(BaseWindowController):
         g = info["glyph"]
         
         selectedSegment = None
+        
+        # this should be all points of selected contour
         allPoints = self.collectPoints(g)
         selectedOnCurves = []
         selectedOffCurves = []
@@ -81,7 +83,7 @@ class Parallelogram(BaseWindowController):
         else:
             stroke(1, 0, 0, 1)
 
-        strokeWidth(1)
+        strokeWidth(0.5)
         line(pt0, pt1)
         line(pt2, pt3)
         
