@@ -60,7 +60,7 @@ class Parallelogram(BaseWindowController):
                 # When segments are selected, add to list and log the parent contour
                 if segment.selected:
                     if segment.type != "curve":
-                        return
+                        continue
                     self.selectedSegments.append(segment)
                     if segment.contour not in self.selectedContours:
                         self.selectedContours.append(segment.contour)
@@ -68,10 +68,11 @@ class Parallelogram(BaseWindowController):
                 # if a point is selected, and then find its segment
                 else:
                     for point in segment.points:
-                        if point.type == "offcurve" and point.selected:
-                            self.selectedSegments.append(segment)
-                            if segment.contour not in self.selectedContours:
-                                self.selectedContours.append(segment.contour)
+                        if point.type != "offcurve" or not point.selected:
+                            continue
+                        self.selectedSegments.append(segment)
+                        if segment.contour not in self.selectedContours:
+                            self.selectedContours.append(segment.contour)
 
         self.drawLines(info["scale"])
         
