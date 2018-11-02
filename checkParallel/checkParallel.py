@@ -1,3 +1,7 @@
+"""
+There's an extension version of this script, with icon and all
+"""
+
 import mojo.drawingTools as dt
 from mojo.events import EditingTool, installTool
 from mojo.UI import UpdateCurrentGlyphView
@@ -115,5 +119,7 @@ class CheckParallel(EditingTool):
             dt.line(pt0, pt1)
             dt.line(pt2, pt3)
 
+    def getToolbarTip(self):
+        return "Check Parallel Tool"
 
 installTool(CheckParallel())
