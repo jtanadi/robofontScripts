@@ -1,20 +1,15 @@
 import mojo.drawingTools as dt
-from mojo.events import addObserver, removeObserver
+from mojo.events import EditingTool, installTool
 from mojo.UI import UpdateCurrentGlyphView
-from vanilla import FloatingWindow
-from defconAppKit.windows.baseWindow import BaseWindowController
 
-class CheckParallel(BaseWindowController):
-    def __init__(self):
+class CheckParallel(EditingTool):
+    def setup(self):
+        self.glyph = CurrentGlyph()
+        self.tolerance = 0.05
+
         # These are lists so we can track how many of each is selected
         self.selectedContours = []
         self.selectedSegments = []
-
-        self.w = FloatingWindow((150, 25), "Parallelogram")
-        
-        addObserver(self, "findSelection", "draw")    
-        self.setUpBaseWindowBehavior()
-        self.w.open()
 
     def _collectPointsInContour(self, contour):
         pointsList = []
@@ -47,24 +42,27 @@ class CheckParallel(BaseWindowController):
     def _checkParallel(self, line1, line2):        
         ((x0, y0), (x1, y1)) = line1
         ((x2, y2), (x3, y3)) = line2
-        tolerance = .05 # arbitrary
 
         m1 = self._calcSlope((x0, y0), (x1, y1))
         m2 = self._calcSlope((x2, y2), (x3, y3))
 
         # instead of checking for absolute equality (m1 == m2),
         # allow for some tolerance
-        return abs(m1 - m2) <= tolerance
+        return abs(m1 - m2) <= self.tolerance
     
-    def findSelection(self, info):
-        g = info["glyph"]
+    def mouseDown(self, point, clickCount):
+        if clickCount == 2:
+            print("twice")
+
+    def draw(self, scale):
+        # g = info["glyph"]
 
         self.selectedContours = []
         self.selectedSegments = []
 
         # Find selected segment... 
         # is this the best way (ie. do I have to iterate?)
-        for contour in g.contours:
+        for contour in self.glyph.contours:
             for segment in contour:
                 # When segments are selected, add to list and log the parent contour
                 if segment.selected:
@@ -83,7 +81,7 @@ class CheckParallel(BaseWindowController):
                         if segment.contour not in self.selectedContours:
                             self.selectedContours.append(segment.contour)
 
-        self.drawLines(info["scale"])
+        self.drawLines(scale)
         
     def drawLines(self, lineThickness):
         # Don't do anything if no segments have been selected,
@@ -116,10 +114,6 @@ class CheckParallel(BaseWindowController):
             dt.strokeWidth(lineThickness)
             dt.line(pt0, pt1)
             dt.line(pt2, pt3)
-        
-    def windowCloseCallback(self, sender):
-        removeObserver(self, "draw")
-        UpdateCurrentGlyphView()
-        super(Parallelogram, self).windowCloseCallback(sender)
-               
-CheckParallel()
+
+
+installTool(CheckParallel())
